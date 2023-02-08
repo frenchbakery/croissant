@@ -21,9 +21,9 @@ int main()
 
     for (;;)
     {
-        go::pom_sorter.setColorSelector(pom_sorter::pos_t::green);
+        go::pom_sorter.setColorSelector(PomSorter::pos_t::green);
         msleep(1000);
-        go::pom_sorter.setColorSelector(pom_sorter::pos_t::red);
+        go::pom_sorter.setColorSelector(PomSorter::pos_t::red);
         msleep(1000);
     }
 
