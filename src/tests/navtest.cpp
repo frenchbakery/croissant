@@ -16,6 +16,7 @@
 
 #include "drivers/navigation/croissant/ramped_motor.hpp"
 
+/*
 BackEMF counter(0);
 Motor motor(0);
 
@@ -64,5 +65,25 @@ int main()
         //msleep(50);
         
     }
+    return 0;
+}*/
+
+RampedMotor motor(0);
+
+int main()
+{
+    //motor.setAccuracy(2);
+    int goal = 1900;
+    bool state = true;
+    for (;;)
+    {
+        std::cout << "Start" << std::endl;
+        motor.moveToPosition(500, (state ? goal : 0));
+        motor.blockMotorDone();
+        std::cout << "Finished" << std::endl;
+        state = !state;
+        msleep(1000);
+    }
+
     return 0;
 }
