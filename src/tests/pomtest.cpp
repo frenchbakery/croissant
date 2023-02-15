@@ -8,7 +8,7 @@
  * @copyright Copyright FrenchBakery (c) 2023
  * 
  */
-
+/*
 #include <kipr/util.hpp>
 #include <kipr/motors.hpp>
 
@@ -40,4 +40,4 @@ int main()
     }
 
     go::pom_sorter.terminate();
-}
+}*/
