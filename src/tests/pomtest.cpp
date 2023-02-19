@@ -8,36 +8,33 @@
  * @copyright Copyright FrenchBakery (c) 2023
  * 
  */
-/*
-#include <kipr/util.hpp>
-#include <kipr/motors.hpp>
 
+#include <kipr/util.hpp>
+
+#include "drivers/navigation/croissant/crnav.hpp"
 #include "drivers/croissant/pom_sorter/pom_sorter.hpp"
 
-
-Motor motorl(0);
-Motor motorr(1);
-
+CRNav __crnav;
+namespace go
+{
+    Navigation &nav = __crnav;
+};
 
 int main()
 {
     go::pom_sorter.initialize();
+    go::nav.initialize();
 
-    for (;;)
+    for (int i = 0; i < 5; i++)
     {
-        go::pom_sorter.setColorSelector(PomSorter::pos_t::green);
-        motorl.forward();
-        motorr.forward();
-        msleep(1000);
-        motorl.freeze();
-        motorr.freeze();
         go::pom_sorter.setColorSelector(PomSorter::pos_t::red);
-        motorl.forward();
-        motorr.forward();
-        msleep(1000);
-        motorl.freeze();
-        motorr.freeze();
+        go::nav.driveDistance(20);
+        go::nav.awaitTargetReached();
+        go::pom_sorter.setColorSelector(PomSorter::pos_t::green);
+        go::nav.driveDistance(20);
+        go::nav.awaitTargetReached();
     }
 
     go::pom_sorter.terminate();
-}*/
+    go::nav.terminate();
+}
