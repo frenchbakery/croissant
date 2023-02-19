@@ -32,7 +32,8 @@ int main()
         go::nav.rotateBy(M_PI_2);
         go::nav.awaitTargetReached();
     }*/
-    for (int speed = 500; speed < 1501; speed += 500)
+    
+    /*for (int speed = 500; speed < 1501; speed += 500)
     {
         std::cout << "Speed: " << speed << std::endl;
         go::nav.setMotorSpeed(speed);
@@ -41,7 +42,10 @@ int main()
         go::nav.driveDistance(-20);
         go::nav.awaitTargetReached();
         msleep(2000);
-    }
+    }*/
+
+    go::nav.driveDistance(70);
+    go::nav.awaitTargetReached();
 
     go::nav.terminate();
     return 0;
