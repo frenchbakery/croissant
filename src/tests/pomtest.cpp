@@ -24,6 +24,7 @@ int main()
 {
     go::pom_sorter.initialize();
     go::nav.initialize();
+    go::nav.setMotorSpeed(1500);
     
     /*go::pom_sorter.setColorSelector(PomSorter::pos_t::red);
 
