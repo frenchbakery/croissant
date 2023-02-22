@@ -1,5 +1,5 @@
 /**
- * @file pom_sorter.hpp
+ * @file pom_container.hpp
  * @author melektron
  * @brief driver class for the pom sorter of the croissant robot
  * @version 0.1
@@ -13,7 +13,7 @@
 
 #include <kipr/servo.hpp>
 
-class PomSorter
+class PomContainer
 {
 protected:
     // Hardware access
@@ -30,7 +30,7 @@ protected:
 
 public:
 
-    PomSorter(int sp);
+    PomContainer(int sp);
 
     void initialize();
     void terminate();
@@ -45,5 +45,5 @@ public:
 
 namespace go
 {
-    extern ::PomSorter pom_sorter;
+    extern ::PomContainer pom_container;
 };

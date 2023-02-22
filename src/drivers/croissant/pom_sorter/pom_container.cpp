@@ -1,5 +1,5 @@
 /**
- * @file pom_sorter.hpp
+ * @file pom_container.hpp
  * @author melektron
  * @brief driver class for the pom sorter of the croissant robot
  * @version 0.1
@@ -14,10 +14,10 @@
 #include <kipr/servo.hpp>
 #include <kipr/util.hpp>
 
-#include "pom_sorter.hpp"
+#include "pom_container.hpp"
 
-PomSorter go::pom_sorter(0);
-using c_t = PomSorter::pos_t;
+PomContainer go::pom_container(0);
+using c_t = PomContainer::pos_t;
 
 
 // servo position defs
@@ -28,12 +28,12 @@ using c_t = PomSorter::pos_t;
 
 
 
-PomSorter::PomSorter(int sp)
+PomContainer::PomContainer(int sp)
     : selector_servo(sp)
 {
 }
 
-void PomSorter::moveServoToIn(int target_pos, int time)
+void PomContainer::moveServoToIn(int target_pos, int time)
 {
     int pos = selector_servo.position();
     const int steps_size = 10;
@@ -48,7 +48,7 @@ void PomSorter::moveServoToIn(int target_pos, int time)
     selector_servo.setPosition(target_pos);
 }
 
-void PomSorter::initialize()
+void PomContainer::initialize()
 {
     selector_servo.enable();
     selector_servo.setPosition(POSITION_CENTER);
@@ -56,7 +56,7 @@ void PomSorter::initialize()
     //selector_servo.disable();
 }
 
-void PomSorter::terminate()
+void PomContainer::terminate()
 {
     //selector_servo.enable();
     selector_servo.setPosition(POSITION_CENTER);
@@ -64,7 +64,7 @@ void PomSorter::terminate()
     selector_servo.disable();
 }
 
-void PomSorter::setColorSelector(PomSorter::pos_t col)
+void PomContainer::setColorSelector(PomContainer::pos_t col)
 {
     if (col == c_t::green)
     {

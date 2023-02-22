@@ -12,7 +12,7 @@
 #include <kipr/util.hpp>
 
 #include "drivers/navigation/croissant/crnav.hpp"
-#include "drivers/croissant/pom_sorter/pom_sorter.hpp"
+#include "drivers/croissant/pom_sorter/pom_container.hpp"
 
 CRNav __crnav;
 namespace go
@@ -22,11 +22,11 @@ namespace go
 
 int main()
 {
-    go::pom_sorter.initialize();
+    go::pom_container.initialize();
     go::nav.initialize();
     go::nav.setMotorSpeed(1500);
     
-    /*go::pom_sorter.setColorSelector(PomSorter::pos_t::red);
+    /*go::pom_container.setColorSelector(PomContainer::pos_t::red);
 
     go::nav.driveDistance(35);
     go::nav.awaitTargetReached();
@@ -35,14 +35,14 @@ int main()
     
     for (int i = 0; i < 5; i++)
     {
-        go::pom_sorter.setColorSelector(PomSorter::pos_t::green);
+        go::pom_container.setColorSelector(PomContainer::pos_t::green);
         go::nav.driveDistance(20);
         go::nav.awaitTargetReached();
-        go::pom_sorter.setColorSelector(PomSorter::pos_t::red);
+        go::pom_container.setColorSelector(PomContainer::pos_t::red);
         go::nav.driveDistance(20);
         go::nav.awaitTargetReached();
     }
 
-    go::pom_sorter.terminate();
+    go::pom_container.terminate();
     go::nav.terminate();
 }
