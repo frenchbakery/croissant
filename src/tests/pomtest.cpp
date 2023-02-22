@@ -10,6 +10,7 @@
  */
 
 #include <kipr/util.hpp>
+#include <kipr/button.h>
 
 #include "drivers/navigation/croissant/crnav.hpp"
 #include "drivers/croissant/pom_sorter/pom_container.hpp"
@@ -22,6 +23,8 @@ namespace go
 
 int main()
 {
+    while (!push_button()) msleep(10);
+
     go::pom_container.initialize();
     go::nav.initialize();
     go::nav.setMotorSpeed(500);
@@ -33,14 +36,14 @@ int main()
     go::nav.rotateBy(-M_PI_2);
     go::nav.awaitTargetReached();*/
     
+    int n = 5;
+    go::nav.driveDistance(20 * n);
+
     for (int i = 0; i < 5; i++)
     {
         go::pom_container.open();
-        go::nav.driveDistance(20);
-        go::nav.awaitTargetReached();
+        go::nav.awaitTargetPercentage((100/n) * i);
         go::pom_container.close();
-        go::nav.driveDistance(20);
-        go::nav.awaitTargetReached();
     }
 
     go::pom_container.terminate();
