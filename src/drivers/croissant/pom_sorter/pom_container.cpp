@@ -17,16 +17,11 @@
 #include "pom_container.hpp"
 
 PomContainer go::pom_container(0);
-using c_t = PomContainer::pos_t;
-
 
 // servo position defs
-#define POSITION_CENTER 1120
-#define POSITION_RED    687
-#define POSITION_GREEN  1467
-
-
-
+#define POSITION_OPEN 2047
+#define POSITION_CLOSED 900
+#define POSITION_HOLD 1467
 
 PomContainer::PomContainer(int sp)
     : selector_servo(sp)
@@ -38,7 +33,7 @@ void PomContainer::moveServoToIn(int target_pos, int time)
     int pos = selector_servo.position();
     const int steps_size = 10;
     const int delay_per_step = (time * steps_size) / std::abs(target_pos - pos);
-    const int direction = pos > target_pos ? -1 : 1;    // decrement if target is smaller
+    const int direction = pos > target_pos ? -1 : 1; // decrement if target is smaller
     while (std::abs(target_pos - pos) >= steps_size)
     {
         selector_servo.setPosition(pos += direction * steps_size);
@@ -51,33 +46,29 @@ void PomContainer::moveServoToIn(int target_pos, int time)
 void PomContainer::initialize()
 {
     selector_servo.enable();
-    selector_servo.setPosition(POSITION_CENTER);
-    //msleep(200);
-    //selector_servo.disable();
+    moveServoToIn(POSITION_HOLD, 500);
+    // msleep(200);
+    // selector_servo.disable();
 }
 
 void PomContainer::terminate()
 {
-    //selector_servo.enable();
-    selector_servo.setPosition(POSITION_CENTER);
-    msleep(200);
+    // selector_servo.enable();
+    moveServoToIn(POSITION_HOLD, 500);
     selector_servo.disable();
 }
 
-void PomContainer::setColorSelector(PomContainer::pos_t col)
+void PomContainer::open()
 {
-    if (col == c_t::green)
-    {
-        std::cout << "selecting green" << std::endl;
-        //selector_servo.enable();
-        moveServoToIn(POSITION_GREEN, 1000);
-        //selector_servo.disable();
-    }
-    else if (col == c_t::red)
-    {
-        std::cout << "selecting red" << std::endl;
-        //selector_servo.enable();
-        moveServoToIn(POSITION_RED, 1000);
-        //selector_servo.disable();
-    }
+    // selector_servo.enable();
+    moveServoToIn(POSITION_OPEN, 1000);
+    // selector_servo.disable();
+}
+
+void PomContainer::close()
+{
+
+    // selector_servo.enable();
+    moveServoToIn(POSITION_CLOSED, 1000);
+    // selector_servo.disable();
 }

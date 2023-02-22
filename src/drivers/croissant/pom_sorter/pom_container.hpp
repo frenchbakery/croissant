@@ -34,13 +34,9 @@ public:
 
     void initialize();
     void terminate();
-    enum pos_t
-    {
-        green,
-        red
-    };
 
-    void setColorSelector(pos_t col);
+    void open();
+    void close();
 };
 
 namespace go

@@ -24,7 +24,7 @@ int main()
 {
     go::pom_container.initialize();
     go::nav.initialize();
-    go::nav.setMotorSpeed(1500);
+    go::nav.setMotorSpeed(500);
     
     /*go::pom_container.setColorSelector(PomContainer::pos_t::red);
 
@@ -35,10 +35,10 @@ int main()
     
     for (int i = 0; i < 5; i++)
     {
-        go::pom_container.setColorSelector(PomContainer::pos_t::green);
+        go::pom_container.open();
         go::nav.driveDistance(20);
         go::nav.awaitTargetReached();
-        go::pom_container.setColorSelector(PomContainer::pos_t::red);
+        go::pom_container.close();
         go::nav.driveDistance(20);
         go::nav.awaitTargetReached();
     }
