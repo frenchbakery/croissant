@@ -31,6 +31,7 @@ PomContainer::PomContainer(int sp)
 void PomContainer::moveServoToIn(int target_pos, int time)
 {
     int pos = selector_servo.position();
+    if (pos == target_pos) return;
     const int steps_size = 10;
     const int delay_per_step = (time * steps_size) / std::abs(target_pos - pos);
     const int direction = pos > target_pos ? -1 : 1; // decrement if target is smaller
@@ -61,7 +62,7 @@ void PomContainer::terminate()
 void PomContainer::open()
 {
     // selector_servo.enable();
-    moveServoToIn(POSITION_OPEN, 1000);
+    moveServoToIn(POSITION_OPEN, 400);
     // selector_servo.disable();
 }
 
@@ -69,6 +70,6 @@ void PomContainer::close()
 {
 
     // selector_servo.enable();
-    moveServoToIn(POSITION_CLOSED, 1000);
+    moveServoToIn(POSITION_CLOSED, 400);
     // selector_servo.disable();
 }
