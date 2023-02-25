@@ -11,17 +11,16 @@
 
 #include <iostream>
 #include <cmath>
-#include <kipr/servo.hpp>
-#include <kipr/util.hpp>
+#include <kipr/time/time.h>
 
 #include "pom_container.hpp"
 
 PomContainer go::pom_container(0);
 
 // servo position defs
-#define POSITION_OPEN 2047
-#define POSITION_CLOSED 900
-#define POSITION_HOLD 1467
+#define POSITION_OPEN 1863
+#define POSITION_CLOSED 610
+#define POSITION_HOLD 1030
 
 PomContainer::PomContainer(int sp)
     : selector_servo(sp)
