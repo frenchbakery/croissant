@@ -28,8 +28,10 @@ namespace go
 
 kipr::motor::Motor testmotor(0);
 kipr::motor::BackEMF motorpos(0);
-kp::SyncPID mypid(1, 0, -5, 2, -100, 100);
-int delay = 20;
+kipr::motor::BackEMF potpos(1);
+kipr::motor::Motor refmotor(1);
+kp::SyncPID mypid(20, 0, 0, 0, -1500, 1500);
+int delay = 1;
 /*
 kp::RampedMotor testmotor2(1);
 */
@@ -40,22 +42,32 @@ int main()
     
     bool threxit = false;
     testmotor.clearPositionCounter();
+    refmotor.clearPositionCounter();
+    //mypid.setOutputDeadband(8, 9);
 
     std::thread pidthread([&threxit](){
         while (!threxit)
         {
             double output = mypid.update(delay, motorpos.value());
-            testmotor.motorPower(output);
+            //std::cout << output << std::endl;
+            testmotor.moveAtVelocity(output);
             msleep(delay);
         }
     });
 
-    for (int i = 0; i < 1; i++)
+    /*for (int i = 0; i < 2; i++)
     {
         mypid.setSetpoint(2000);
         msleep(5000);
         mypid.setSetpoint(-2000);
         msleep(5000);
+    }*/
+    //refmotor.moveRelativePosition(300, 10000);
+    while (true)
+    {
+        int target = potpos.value();
+        mypid.setSetpoint(target);
+        msleep(2);
     }
     
     threxit = true;
