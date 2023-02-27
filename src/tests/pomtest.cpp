@@ -31,27 +31,23 @@ namespace go
 
 int main()
 {
+    auto dmotor = std::make_shared<kp::PIDMotor>(5);
     //wait_for_side_button();
-    msleep(1000);
-
-    std::thread mythread([](){
-        msleep(5000);
-    });
 
     auto lmotor = std::make_shared<kp::PIDMotor>(0);
     auto rmotor = std::make_shared<kp::PIDMotor>(1);
-    auto dmotor = std::make_shared<kp::PIDMotor>(2);
-    kp::AggregationEngine myengine({dmotor, lmotor, rmotor});
+    auto mmotor = std::make_shared<kp::PIDMotor>(2);
+    kp::AggregationEngine myengine({rmotor, lmotor, mmotor});
 
     lmotor->clearPositionCounter();
     rmotor->clearPositionCounter();
-    dmotor->clearPositionCounter();
+    mmotor->clearPositionCounter();
     lmotor->setAbsoluteTarget(0);
     rmotor->setAbsoluteTarget(0);
-    dmotor->setAbsoluteTarget(0);
+    mmotor->setAbsoluteTarget(0);
     lmotor->enablePositionControl();
     rmotor->enablePositionControl();
-    dmotor->enablePositionControl();
+    mmotor->enablePositionControl();
 
     std::cout << "enabled, waiting" << std::endl;
     msleep(3000);
@@ -61,10 +57,8 @@ int main()
     {
         myengine.moveRelativePosition(500, 2000);
         std::cout << "positive done" << std::endl;
-        msleep(5000);
         myengine.moveRelativePosition(500, -2000);
         std::cout << "negative done" << std::endl;
-        msleep(5000);
     }
     //refmotor.moveRelativePosition(300, 10000);
     /*while (true)
@@ -73,9 +67,6 @@ int main()
         mymotor.setAbsoluteTarget(target);
         msleep(2);
     }*/
-
-    if (mythread.joinable())
-        mythread.join();
 
     return 0;
 
