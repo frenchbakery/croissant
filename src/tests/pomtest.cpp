@@ -19,14 +19,11 @@
 #include "drivers/navigation/croissant/crnav.hpp"
 #include "drivers/croissant/pom_sorter/pom_container.hpp"
 
-/*CRNav __crnav;
+
 namespace go
 {
-    Navigation &nav = __crnav;
-};*/
-
-
-
+    Navigation *nav = nullptr;
+}
 
 
 int main()
@@ -34,7 +31,7 @@ int main()
     auto dmotor = std::make_shared<kp::PIDMotor>(5);
     //wait_for_side_button();
 
-    auto lmotor = std::make_shared<kp::PIDMotor>(0);
+    /*auto lmotor = std::make_shared<kp::PIDMotor>(0);
     auto rmotor = std::make_shared<kp::PIDMotor>(1);
     kp::AggregationEngine myengine({rmotor, lmotor});
     myengine.setMovementModifiers({1, -1});
@@ -59,14 +56,15 @@ int main()
         int target = potpos.value();
         mymotor.setAbsoluteTarget(target);
         msleep(2);
-    }*/
+    }
 
-    return 0;
+    return 0;*/
 
+    go::nav = new CRNav;
 
-    /*go::pom_container.initialize();
-    go::nav.initialize();
-    go::nav.setMotorSpeed(500);*/
+    go::pom_container.initialize();
+    go::nav->initialize();
+    go::nav->setMotorSpeed(1000);
     
     /*go::pom_container.setColorSelector(PomContainer::pos_t::red);
 
@@ -75,16 +73,22 @@ int main()
     go::nav.rotateBy(-M_PI_2);
     go::nav.awaitTargetReached();*/
     
-    /*int n = 5;
-    go::nav.driveDistance(20 * n);
+    /*go::nav->driveDistance(100);
+    msleep(10000);
+    go::nav->driveDistance(-100);*/
+    go::pom_container.open();
+    go::nav->driveDistance(20);
 
     for (int i = 0; i < 5; i++)
     {
-        go::pom_container.open();
-        go::nav.awaitTargetPercentage((100/n) * i);
         go::pom_container.close();
+        go::nav->driveDistance(25);
+        go::pom_container.open();
+        go::nav->driveDistance(15);
     }
 
+    msleep(1000);
+
     go::pom_container.terminate();
-    go::nav.terminate();*/
+    go::nav->terminate();
 }

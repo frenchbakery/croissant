@@ -18,9 +18,9 @@ RUN_DIR = run
 MOUNT_FOLDER = mount
 WORKSPACE_NAME = $(shell basename ${PWD})
 
-# C++ configuration  -D__CROISSANT
+# C++ configuration
 CC = g++
-CFLAGS = -g -I$(INCLUDE_DIR) -I$(INCLUDE_DIR)/el-std/include -I$(SRC_DIR) $(CARG) -std=c++17 
+CFLAGS = -g -I$(INCLUDE_DIR) -I$(INCLUDE_DIR)/el-std/include -I$(SRC_DIR) $(CARG) -std=c++17 -D__CROISSANT
 LIBS = -lpthread -lkipr $(LARG)
 
 # files and compliation results
