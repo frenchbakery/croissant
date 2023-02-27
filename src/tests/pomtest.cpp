@@ -36,28 +36,21 @@ int main()
 
     auto lmotor = std::make_shared<kp::PIDMotor>(0);
     auto rmotor = std::make_shared<kp::PIDMotor>(1);
-    auto mmotor = std::make_shared<kp::PIDMotor>(2);
-    kp::AggregationEngine myengine({rmotor, lmotor, mmotor});
+    kp::AggregationEngine myengine({rmotor, lmotor});
+    myengine.setMovementModifiers({1, -1});
 
     lmotor->clearPositionCounter();
     rmotor->clearPositionCounter();
-    mmotor->clearPositionCounter();
     lmotor->setAbsoluteTarget(0);
     rmotor->setAbsoluteTarget(0);
-    mmotor->setAbsoluteTarget(0);
     lmotor->enablePositionControl();
     rmotor->enablePositionControl();
-    mmotor->enablePositionControl();
-
-    std::cout << "enabled, waiting" << std::endl;
-    msleep(3000);
-    std::cout << "go!" << std::endl;
 
     for (int i = 0; i < 2; i++)
     {
-        myengine.moveRelativePosition(500, 2000);
+        myengine.moveRelativePosition(1000, 4000);
         std::cout << "positive done" << std::endl;
-        myengine.moveRelativePosition(500, -2000);
+        myengine.moveRelativePosition(1000, -4000);
         std::cout << "negative done" << std::endl;
     }
     //refmotor.moveRelativePosition(300, 10000);
