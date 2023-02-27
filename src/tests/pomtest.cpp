@@ -13,52 +13,76 @@
 
 #include <kipr/time/time.h>
 #include <kipr/wait_for/wait_for.h>
-#include <kipr/motor/motor.hpp>
 #include <kiprplus/pid_motor.hpp>
+#include <kiprplus/aggregation_engine.hpp>
 
 #include "drivers/navigation/croissant/crnav.hpp"
 #include "drivers/croissant/pom_sorter/pom_container.hpp"
 
-CRNav __crnav;
+/*CRNav __crnav;
 namespace go
 {
     Navigation &nav = __crnav;
-};
+};*/
 
 
-kp::PIDMotor mymotor(0);
-kipr::motor::BackEMF potpos(1);
-kipr::motor::Motor refmotor(1);
+
+
 
 int main()
 {
     //wait_for_side_button();
-    
-    refmotor.clearPositionCounter();
-    mymotor.clearPositionCounter();
-    mymotor.enablePositionControl();
+    msleep(1000);
 
-    /*for (int i = 0; i < 2; i++)
+    std::thread mythread([](){
+        msleep(5000);
+    });
+
+    auto lmotor = std::make_shared<kp::PIDMotor>(0);
+    auto rmotor = std::make_shared<kp::PIDMotor>(1);
+    auto dmotor = std::make_shared<kp::PIDMotor>(2);
+    kp::AggregationEngine myengine({dmotor, lmotor, rmotor});
+
+    lmotor->clearPositionCounter();
+    rmotor->clearPositionCounter();
+    dmotor->clearPositionCounter();
+    lmotor->setAbsoluteTarget(0);
+    rmotor->setAbsoluteTarget(0);
+    dmotor->setAbsoluteTarget(0);
+    lmotor->enablePositionControl();
+    rmotor->enablePositionControl();
+    dmotor->enablePositionControl();
+
+    std::cout << "enabled, waiting" << std::endl;
+    msleep(3000);
+    std::cout << "go!" << std::endl;
+
+    for (int i = 0; i < 2; i++)
     {
-        mypid.setSetpoint(2000);
+        myengine.moveRelativePosition(500, 2000);
+        std::cout << "positive done" << std::endl;
         msleep(5000);
-        mypid.setSetpoint(-2000);
+        myengine.moveRelativePosition(500, -2000);
+        std::cout << "negative done" << std::endl;
         msleep(5000);
-    }*/
+    }
     //refmotor.moveRelativePosition(300, 10000);
-    while (true)
+    /*while (true)
     {
         int target = potpos.value();
         mymotor.setAbsoluteTarget(target);
         msleep(2);
-    }
-    
+    }*/
+
+    if (mythread.joinable())
+        mythread.join();
+
     return 0;
 
 
-    go::pom_container.initialize();
+    /*go::pom_container.initialize();
     go::nav.initialize();
-    go::nav.setMotorSpeed(500);
+    go::nav.setMotorSpeed(500);*/
     
     /*go::pom_container.setColorSelector(PomContainer::pos_t::red);
 
@@ -67,7 +91,7 @@ int main()
     go::nav.rotateBy(-M_PI_2);
     go::nav.awaitTargetReached();*/
     
-    int n = 5;
+    /*int n = 5;
     go::nav.driveDistance(20 * n);
 
     for (int i = 0; i < 5; i++)
@@ -78,5 +102,5 @@ int main()
     }
 
     go::pom_container.terminate();
-    go::nav.terminate();
+    go::nav.terminate();*/
 }
