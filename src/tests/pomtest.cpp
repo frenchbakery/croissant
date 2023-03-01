@@ -77,17 +77,38 @@ int main()
     msleep(10000);
     go::nav->driveDistance(-100);*/
     go::pom_container.open();
-    go::nav->driveDistance(20);
+    go::nav->driveDistance(40);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->rotateBy(M_PI_2);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->driveDistance(100);
+    go::nav->awaitTargetReached();
+    msleep(1000);
 
-    for (int i = 0; i < 5; i++)
+
+    /*for (int i = 0; i < 5; i++)
     {
         go::pom_container.close();
         go::nav->driveDistance(25);
         go::pom_container.open();
         go::nav->driveDistance(15);
-    }
+    }*/
 
+    go::nav->rotateBy(M_PI);
+    go::nav->awaitTargetReached();
     msleep(1000);
+    go::nav->driveDistance(100);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->rotateBy(M_PI_2);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->driveDistance(-40);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+
 
     go::pom_container.terminate();
     go::nav->terminate();
