@@ -32,6 +32,9 @@
         "args": [],
         "stopAtEntry": false,
         "cwd": "~/projects/croissant",
+        "sourceFileMap": {
+            "/home/access/projects/croissant": "${workspaceFolder}"
+        },
         "environment": [],
         "externalConsole": true,
         "MIMode": "gdb",
@@ -51,7 +54,7 @@
             "pipeCwd": "/usr/bin",
             "pipeProgram": "/usr/bin/ssh",
             "pipeArgs": [
-                "access@192.168.125.1"
+                "access@192.168.4.43"
             ],
             "debuggerPath": "/usr/bin/gdb"
         },

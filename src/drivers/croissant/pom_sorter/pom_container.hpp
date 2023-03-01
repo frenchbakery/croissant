@@ -11,13 +11,13 @@
 
 #pragma once
 
-#include <kipr/servo.hpp>
+#include <kipr/servo/servo.hpp>
 
 class PomContainer
 {
 protected:
     // Hardware access
-    Servo selector_servo;
+    kipr::servo::Servo selector_servo;
 
     /**
      * @brief moves the servo to the specified position in the
