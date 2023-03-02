@@ -112,8 +112,8 @@ int main()
     msleep(1000);
     */
 
-    /*
-    test vid 2
+    
+    //test vid 2
     go::nav->driveDistance(50);
     go::nav->awaitTargetReached();
     msleep(1000);
@@ -153,9 +153,14 @@ int main()
     go::nav->driveDistance(-50);
     go::nav->awaitTargetReached();
     msleep(1000);
-    */
-    go::nav->rotateBy(M_2_PI * 10);
+    
+    
+    
+    /*go::nav->rotateBy(M_PI * 10);
     go::nav->awaitTargetReached();
+    msleep(8000);
+    go::nav->rotateBy(M_PI * -10);
+    go::nav->awaitTargetReached();*/
 
     go::pom_container.terminate();
     go::nav->terminate();
