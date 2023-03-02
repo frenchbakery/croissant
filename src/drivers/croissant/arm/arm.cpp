@@ -76,8 +76,11 @@ float Arm::getYcm()
 }
 
 
-void Arm::shutdownAndBlock()
+void Arm::shutdownAndBlock(char *reason)
 {
+    if (reason != "")
+        std::cout << reason;
+
     y_motor.off();
     l_servo.disable();
     r_servo.disable();
@@ -88,10 +91,37 @@ void Arm::shutdownAndBlock()
 void Arm::grab(int percent)
 {
     // move cross
+    int perc_delta = grab_closed - percent;
+
+    // add / subtract closed delta from current angle
+    int r_pos = r_servo.getSetPosition() - max_grab * (perc_delta / 100.0);
+    int l_pos = l_servo.getSetPosition() - max_grab * (perc_delta / 100.0);
+
+    // update servo positions
+    r_servo.setPosition(r_pos);
+    l_servo.setPosition(l_pos);
 }
 
 
 void Arm::tilt(int angle)
 {
+    if (!(angle <= 90))
+        shutdownAndBlock("invalid angle!");
+
     // move straight
+    int angle_delta = current_angle - angle;
+    float angle_perc = angle_delta / 90;
+
+    // add / subtract angle delta from current angle
+    int r_pos = r_servo.getSetPosition() - 1024 * angle_perc;
+    int l_pos = l_servo.getSetPosition() + 1024 * angle_perc;
+
+    // update servo positions
+    r_servo.setPosition(r_pos);
+    l_servo.setPosition(l_pos);
+}
+
+float Arm::getTilt()
+{
+    return current_angle;
 }
