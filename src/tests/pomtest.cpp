@@ -1,12 +1,12 @@
 /**
  * @file pomtest.cpp
  * @author test program for pom sorting
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2023-02-08
- * 
+ *
  * @copyright Copyright FrenchBakery (c) 2023
- * 
+ *
  */
 
 #include <iostream>
@@ -19,17 +19,15 @@
 #include "drivers/navigation/croissant/crnav.hpp"
 #include "drivers/croissant/pom_sorter/pom_container.hpp"
 
-
 namespace go
 {
     Navigation *nav = nullptr;
 }
 
-
 int main()
 {
     auto dmotor = std::make_shared<kp::PIDMotor>(5);
-    //wait_for_side_button();
+    // wait_for_side_button();
 
     /*auto lmotor = std::make_shared<kp::PIDMotor>(0);
     auto rmotor = std::make_shared<kp::PIDMotor>(1);
@@ -64,19 +62,22 @@ int main()
 
     go::pom_container.initialize();
     go::nav->initialize();
-    go::nav->setMotorSpeed(1000);
-    
+    go::nav->setMotorSpeed(1200);
+
     /*go::pom_container.setColorSelector(PomContainer::pos_t::red);
 
     go::nav.driveDistance(35);
     go::nav.awaitTargetReached();
     go::nav.rotateBy(-M_PI_2);
     go::nav.awaitTargetReached();*/
-    
+
     /*go::nav->driveDistance(100);
     msleep(10000);
     go::nav->driveDistance(-100);*/
     go::pom_container.open();
+
+    /*
+    test vid 1
     go::nav->driveDistance(40);
     go::nav->awaitTargetReached();
     msleep(1000);
@@ -85,8 +86,7 @@ int main()
     msleep(1000);
     go::nav->driveDistance(100);
     go::nav->awaitTargetReached();
-    msleep(1000);
-
+    msleep(1000);*/
 
     /*for (int i = 0; i < 5; i++)
     {
@@ -96,6 +96,8 @@ int main()
         go::nav->driveDistance(15);
     }*/
 
+    /*
+    test vid 1
     go::nav->rotateBy(M_PI);
     go::nav->awaitTargetReached();
     msleep(1000);
@@ -108,7 +110,52 @@ int main()
     go::nav->driveDistance(-40);
     go::nav->awaitTargetReached();
     msleep(1000);
+    */
 
+    /*
+    test vid 2
+    go::nav->driveDistance(50);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->rotateBy(M_PI_2);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->driveDistance(60);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->rotateBy(M_PI_2);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->driveDistance(50);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->rotateBy(-M_PI_2);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->driveDistance(40);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->rotateBy(-M_PI_2);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->driveDistance(50);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->rotateBy(-M_PI_2);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->driveDistance(100);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->rotateBy(M_PI_2);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    go::nav->driveDistance(-50);
+    go::nav->awaitTargetReached();
+    msleep(1000);
+    */
+    go::nav->rotateBy(M_2_PI * 10);
+    go::nav->awaitTargetReached();
 
     go::pom_container.terminate();
     go::nav->terminate();
