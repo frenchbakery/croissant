@@ -22,13 +22,13 @@ class Arm
         kp::SmoothServo r_servo;
         kipr::digital::Digital esw;
         float current_angle = 90;
-        int grab_closed = 100;
+        int grab_current = 0;
 
         // settings
         const int max_y = 1350;  // max motor position count
         const float y_cm = 9.6;  // real life measurement
-        const int l_initial = 600;
-        const int r_initial = 1448;
+        const int l_initial = 1125;
+        const int r_initial = 725;
         const int max_grab = 300;
 
         /**
@@ -79,12 +79,16 @@ class Arm
          */
         float getYcm();
 
+        void waitForY();
+
         /**
-         * @brief close the grabber
+         * @brief close the grabber (0...open 100...closed)
          * 
          * @param percent 0..100
          */
         void grab(int percent);
+
+        void waitForGrab();
 
         /**
          * @brief tilt the grabber in degrees
@@ -92,6 +96,8 @@ class Arm
          * @param angle 0...90
          */
         void tilt(int angle);
+
+        void waitForTilt();
 
         /**
          * @brief get the current grabber tilt in degrees

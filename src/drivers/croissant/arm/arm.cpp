@@ -21,8 +21,8 @@ void Arm::calibrate()
     int l_speed = l_servo.getSpeed();
     int r_speed = r_servo.getSpeed();
 
-    l_servo.setPosition(l_initial, 2048);
-    r_servo.setPosition(r_initial, 2048);
+    l_servo.setPosition(l_initial, 1024);
+    r_servo.setPosition(r_initial, 1024);
 
     // wait for motor to reach end
     y_motor.moveAtVelocity(-100);
@@ -41,6 +41,7 @@ void Arm::calibrate()
     r_servo.waitUntilComleted();
     l_servo.setSpeed(l_speed);
     r_servo.setSpeed(r_speed);
+    std::cout << "servos done\n";
 }
 
 
@@ -90,16 +91,18 @@ void Arm::shutdownAndBlock(char *reason)
 
 void Arm::grab(int percent)
 {
-    // move cross
-    int perc_delta = grab_closed - percent;
+    // 
+    int grab_delta = grab_current - percent;
 
     // add / subtract closed delta from current angle
-    int r_pos = r_servo.getSetPosition() - max_grab * (perc_delta / 100.0);
-    int l_pos = l_servo.getSetPosition() - max_grab * (perc_delta / 100.0);
+    int r_pos = r_servo.getSetPosition() - max_grab * (grab_delta / 100.0);
+    int l_pos = l_servo.getSetPosition() - max_grab * (grab_delta / 100.0);
 
     // update servo positions
     r_servo.setPosition(r_pos);
     l_servo.setPosition(l_pos);
+
+    grab_current = percent;
 }
 
 
@@ -110,18 +113,38 @@ void Arm::tilt(int angle)
 
     // move straight
     int angle_delta = current_angle - angle;
-    float angle_perc = angle_delta / 90;
+    float angle_perc = angle_delta / 90.0;
 
     // add / subtract angle delta from current angle
-    int r_pos = r_servo.getSetPosition() - 1024 * angle_perc;
-    int l_pos = l_servo.getSetPosition() + 1024 * angle_perc;
+    int r_pos = r_servo.getSetPosition() + 1024 * angle_perc;
+    int l_pos = l_servo.getSetPosition() - 1024 * angle_perc;
 
     // update servo positions
     r_servo.setPosition(r_pos);
     l_servo.setPosition(l_pos);
+
+    current_angle = angle;
 }
 
 float Arm::getTilt()
 {
     return current_angle;
+}
+
+void Arm::waitForGrab()
+{
+    l_servo.waitUntilComleted();
+    r_servo.waitUntilComleted();
+}
+
+
+void Arm::waitForTilt()
+{
+    waitForGrab();
+}
+
+
+void Arm::waitForY()
+{
+    y_motor.blockMotorDone();
 }
