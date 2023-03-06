@@ -105,7 +105,6 @@ void Arm::grab(int percent)
     grab_current = percent;
 }
 
-
 void Arm::tilt(int angle)
 {
     if (!(angle <= 90))
@@ -143,8 +142,14 @@ void Arm::waitForTilt()
     waitForGrab();
 }
 
-
 void Arm::waitForY()
 {
     y_motor.blockMotorDone();
+}
+
+
+void Arm::setServoSpeed(int speed)
+{
+    l_servo.setSpeed(speed);
+    r_servo.setSpeed(speed);
 }

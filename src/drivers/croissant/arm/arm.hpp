@@ -105,4 +105,13 @@ class Arm
          * @return float - 0..90
          */
         float getTilt();
+
+        // void setYSpeed(int speed);  // melektron hasn't speeed for PIDMotors yet
+
+        /**
+         * @brief set the servo speeds
+         * 
+         * @param speed in servo ticks per second
+         */
+        void setServoSpeed(int speed);
 };
