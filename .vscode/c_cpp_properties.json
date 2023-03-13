@@ -4,14 +4,18 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/include",
+                "${workspaceFolder}/include/el-std/include",
                 "${workspaceFolder}/devinclude",
                 "${workspaceFolder}/src"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/aarch64-linux-gnu-g++",
             "cStandard": "gnu11",
-            "cppStandard": "gnu++11",
-            "intelliSenseMode": "macos-gcc-arm64"
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-arm64",
+            "compilerArgs": [
+                "-D__CROISSANT"
+            ]
         }
     ],
     "version": 4
