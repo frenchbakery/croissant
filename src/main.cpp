@@ -51,7 +51,7 @@ int main()
     go::nav->rotateBy (D2R(-30));
     go::nav->awaitTargetReached();
     msleep(1000);
-    go::nav->driveDistance(20);
+    go::nav->driveDistance(25);
     go::nav->awaitTargetReached();
     go::pom_container.open();
     msleep(500);
