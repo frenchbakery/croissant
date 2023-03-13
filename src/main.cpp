@@ -26,10 +26,10 @@ namespace go
 
 void Straight_line_sorter()
 {
-    go::nav->driveDistance(30);
+    go::nav->driveDistance(20.5);
     go::nav->awaitTargetReached();
     go::pom_container.open();
-    go::nav->driveDistance(15);
+    go::nav->driveDistance(20.5);
     go::nav->awaitTargetReached();
     go::pom_container.close();
 }
@@ -41,38 +41,34 @@ int main()
     go::nav = new CRNav;
 
     //Press button on Wombat before programm starts
-    wait_for_side_button();
+    //wait_for_side_button();
 
     go::pom_container.initialize();
     go::nav->initialize();
     go::nav->setMotorSpeed(1200);
 
     //First pom is collected
-    go::nav->rotateBy (D2R(-30));
-    go::nav->awaitTargetReached();
+    go::nav->driveVector(el::cart_t(20,-20.7));
     msleep(1000);
-    go::nav->driveDistance(25);
+    go::nav->rotateBy(D2R(45));
     go::nav->awaitTargetReached();
     go::pom_container.open();
-    msleep(500);
-    go::nav->rotateBy(D2R(30));
-    go::nav->awaitTargetReached();
-    msleep(500);
-    go::nav->driveDistance(10);
+    go::nav->driveDistance(30);
     go::nav->awaitTargetReached();
     go::pom_container.close();
 
     //Align Croissant parallel to balck gametable line
-    go::nav->driveDistance(20);
-    go::nav->awaitTargetReached();
     go::nav->rotateBy(D2R(90));
-    msleep(10000);
-
+    go::nav->awaitTargetReached();
+    msleep(500);
+    go::nav->driveDistance(13);
+    
     //Takes red poms from the line until end is reached
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 2; i++)
     {
         Straight_line_sorter();
     }
+    
     /*
     go::pom_container.open();
     go::pom_container.close();
