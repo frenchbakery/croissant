@@ -217,86 +217,18 @@ int main()
         else
             straightLineSorter();
     }
-    /*
-    //First pom is collected
-    go::pom_container.open();
-    go::nav->driveVector(el::cart_t(15, -15));
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::nav->rotateBy(D2R(45));
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::nav->driveDistance(33);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::pom_container.close();
-
-    //Align Croissant parallel to balck gametable line
-    go::nav->rotateBy(D2R(90));
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
     
-    //Takes red poms from the line until end is reached
-    for (int i = 0; i < 3; i++)
-    {
-        if (i == 0)
-            straightLineSorter(13);
-        else
-            straightLineSorter();
-    }
-    
-    // Realign at the end of the table
-    go::nav->driveDistance(-20);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::nav->rotateBy(D2R(90));
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
     go::nav->driveDistance(-10);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::nav->rotateBy(D2R(90));
+    go::nav->rotateBy(D2R(180));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     alignBack();
     go::nav->driveDistance(20);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::nav->rotateBy(D2R(-90));
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    alignFront();
 
-    // Gets to position where it can collect the other red pompoms
-    go::nav->driveDistance(35);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::nav->rotateBy(D2R(90));
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::nav->driveDistance(130);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-
-    // collect first double stack
-    go::pom_container.open();
-    go::nav->driveDistance(20);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::pom_container.close();
-
-*/
-    /*
-    go::pom_container.open();
-    go::pom_container.close();
-
-    go::nav->driveDistance(50);
-    go::nav->awaitTargetReached();
-    msleep(1000);
-    go::nav->rotateBy(M_PI_2);
-    go::nav->awaitTargetReached();
-    msleep(1000);
-    */
    
     msleep(2000);
     go::pom_container.terminate();
