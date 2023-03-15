@@ -72,3 +72,11 @@ void PomContainer::close()
     moveServoToIn(POSITION_CLOSED, 400);
     // selector_servo.disable();
 }
+
+void PomContainer::hold()
+{
+
+    // selector_servo.enable();
+    moveServoToIn(POSITION_HOLD, 400);
+    // selector_servo.disable();
+}

@@ -14,6 +14,7 @@
 #include <kipr/time/time.h>
 #include <kipr/wait_for/wait_for.h>
 #include <kipr/digital/digital.hpp>
+#include <kipr/analog/analog.hpp>
 
 #include "drivers/navigation/croissant/crnav.hpp"
 #include "drivers/croissant/pom_sorter/pom_container.hpp"
@@ -21,11 +22,15 @@
 
 #define D2R(deg) ((deg)*M_PI/180)
 
-#define CALIB_SPEED 400 // TPS
+#define CALIB_SPEED 500 // TPS
+#define LIGHT_THRESHOLD 1500
 
 
 kipr::digital::Digital back_button_left(0);
 kipr::digital::Digital back_button_right(1);
+kipr::analog::Analog line_left(0);
+kipr::analog::Analog line_right(1);
+
 
 
 namespace go
@@ -33,36 +38,60 @@ namespace go
     CRNav *nav = nullptr;
 }
 
-
-void Straight_line_sorter()
+/*
+void correctAlignment()
 {
-    go::nav->driveDistance(17.5);
+    if (onLine())
+    {
+        go::nav->disablePositionControl();
+
+        go::nav->driveLeftSpeed(100);
+        go::nav->driveRightSpeed(-100);
+
+        while (onLine())
+            msleep(10);
+
+        go::nav->driveLeftSpeed(0);
+        go::nav->driveRightSpeed(0);
+        go::nav->resetPositionControllers();
+        go::nav->enablePositionControl();
+    }
+    else
+    {
+        go::nav->disablePositionControl();
+
+        go::nav->driveLeftSpeed(-100);
+        go::nav->driveRightSpeed(100);
+
+        while (!onLine())
+            msleep(10);
+
+        go::nav->driveLeftSpeed(0);
+        go::nav->driveRightSpeed(0);
+        go::nav->resetPositionControllers();
+        go::nav->enablePositionControl();
+    }
+}
+*/
+
+void straightLineSorter(double offset = 0)
+{
+    double first_distance = 15;
+    go::nav->driveDistance(first_distance + offset);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    msleep(200);
     go::pom_container.open();
-    msleep(200);
-    go::nav->driveDistance(23.5);
+    go::nav->driveDistance(41 - first_distance);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     go::pom_container.close();
+    //go::pom_container.hold();
+    //correctAlignment();
 }
 
-
-
-
-int main()
+void alignBack()
 {
-    auto dmotor = std::make_shared<kp::PIDMotor>(5);
-    go::nav = new CRNav;
-
-    //Press button on Wombat before programm starts
-    //wait_for_side_button();
-
-    go::pom_container.initialize();
-    go::nav->initialize();
-    go::nav->setMotorSpeed(1200);
-
+    // Find zero point in X direction and align robot to game table
     go::nav->disablePositionControl();
 
     go::nav->driveLeftSpeed(-100);
@@ -90,61 +119,127 @@ int main()
     go::nav->driveRightSpeed(0);
     go::nav->resetPositionControllers();
     go::nav->enablePositionControl();
+}
 
+void alignFront()
+{
+    // Find zero point in X direction and align robot to game table
+    go::nav->disablePositionControl();
+
+    go::nav->driveLeftSpeed(CALIB_SPEED);
+    go::nav->driveRightSpeed(CALIB_SPEED);
+
+    for (;;)
+    {
+        if (line_left.value() > LIGHT_THRESHOLD)
+            go::nav->driveLeftSpeed(0);
+        else 
+            go::nav->driveLeftSpeed(CALIB_SPEED);
+        
+        if (line_right.value() > LIGHT_THRESHOLD)
+            go::nav->driveRightSpeed(0);
+        else 
+            go::nav->driveRightSpeed(CALIB_SPEED);
+
+        if (line_left.value() > LIGHT_THRESHOLD && line_right.value() > LIGHT_THRESHOLD)
+            break;
+        
+        msleep(10);
+    }
+
+    go::nav->driveLeftSpeed(0);
+    go::nav->driveRightSpeed(0);
+    go::nav->resetPositionControllers();
+    go::nav->enablePositionControl();
+}
+
+int main()
+{
+    auto dmotor = std::make_shared<kp::PIDMotor>(5);
+    go::nav = new CRNav;
+
+    //Press button on Wombat before programm starts
+    //wait_for_side_button();
+
+    go::pom_container.initialize();
+    go::nav->initialize();
+    go::nav->setMotorSpeed(1200);
+
+    alignBack();
     msleep(1000);
 
-    go::nav->driveDistance(2);
+    // drive to home positoin
+    go::nav->driveDistance(5);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-
     msleep(1000);
-
 
     //First pom is collected
     go::pom_container.open();
-    go::nav->driveVector(el::cart_t(20,-20));
+    go::nav->driveVector(el::cart_t(15, -15));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     go::nav->rotateBy(D2R(45));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::nav->driveDistance(31);
+    go::nav->driveDistance(33);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     go::pom_container.close();
 
     //Align Croissant parallel to balck gametable line
     go::nav->rotateBy(D2R(90));
-    go::nav->driveDistance(13);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     
     //Takes red poms from the line until end is reached
     for (int i = 0; i < 3; i++)
     {
-        Straight_line_sorter();
+        if (i == 0)
+            straightLineSorter(13);
+        else
+            straightLineSorter();
     }
     
-    //Gets to position where it can collect the other red pompoms
-    go::nav->rotateBy(D2R(-180));
+    // Realign at the end of the table
+    go::nav->driveDistance(-20);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::nav->driveVector(el::cart_t(-23.5,-23.5));
+    go::nav->rotateBy(D2R(90));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::nav->rotateBy(D2R(40));
+    go::nav->driveDistance(-10);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::nav->driveDistance(105);
+    go::nav->rotateBy(D2R(90));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    
+    alignBack();
+    go::nav->driveDistance(20);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    go::nav->rotateBy(D2R(-90));
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    alignFront();
+
+    // Gets to position where it can collect the other red pompoms
+    go::nav->driveDistance(35);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    go::nav->rotateBy(D2R(90));
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    go::nav->driveDistance(130);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+
+    // collect first double stack
     go::pom_container.open();
-    go::nav->driveDistance(30);
+    go::nav->driveDistance(20);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     go::pom_container.close();
-
 
 
     /*

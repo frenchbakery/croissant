@@ -37,6 +37,7 @@ public:
 
     void open();
     void close();
+    void hold();
 };
 
 namespace go
