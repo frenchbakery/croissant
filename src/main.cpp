@@ -88,6 +88,13 @@ void straightLineSorter(double offset = 0)
     //go::pom_container.hold();
     //correctAlignment();
 }
+    void homeBase()
+    {
+        go::nav->driveDistance(5);
+        go::nav->startSequence();
+        go::nav->awaitSequenceComplete();
+        msleep(1000);
+    }
 
 void alignBack()
 {
@@ -169,11 +176,48 @@ int main()
     msleep(1000);
 
     // drive to home positoin
-    go::nav->driveDistance(5);
+    homeBase();
+
+    //get into aligned position parallel to black tape
+    go::nav->rotateBy(D2R(-90));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    msleep(1000);
+    go::nav->driveDistance(36);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    go::nav->rotateBy(D2R(90));
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    alignBack();
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    homeBase();
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    go::pom_container.open();
+    go::nav->driveDistance(30);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    go::pom_container.close();
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    //go::nav->driveVector(el::cart_t(-20, -20), true);
+    go::nav->driveDistance(-6);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    go::nav->rotateBy(D2R(-270));
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
 
+    //Takes red poms from the line until end is reached
+    for (int i = 0; i < 4; i++)
+    {
+        if (i == 0)
+            straightLineSorter(-15);
+        else
+            straightLineSorter();
+    }
+    /*
     //First pom is collected
     go::pom_container.open();
     go::nav->driveVector(el::cart_t(15, -15));
@@ -241,7 +285,7 @@ int main()
     go::nav->awaitSequenceComplete();
     go::pom_container.close();
 
-
+*/
     /*
     go::pom_container.open();
     go::pom_container.close();
@@ -253,7 +297,7 @@ int main()
     go::nav->awaitTargetReached();
     msleep(1000);
     */
-
+   
     msleep(2000);
     go::pom_container.terminate();
     go::nav->terminate();

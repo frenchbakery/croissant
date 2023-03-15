@@ -18,9 +18,9 @@
 PomContainer go::pom_container(0);
 
 // servo position defs
-#define POSITION_OPEN 1554
-#define POSITION_CLOSED 793
-#define POSITION_HOLD 983
+#define POSITION_OPEN 400
+#define POSITION_CLOSED 1119
+#define POSITION_HOLD 933
 
 PomContainer::PomContainer(int sp)
     : selector_servo(sp)
