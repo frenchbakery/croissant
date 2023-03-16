@@ -6,8 +6,8 @@
 Arm::Arm(int motor_port, int left_servo_port, int right_servo_port, int end_switch_port)
     : 
         y_motor(motor_port), 
-        l_servo(left_servo_port, 600),
-        r_servo(right_servo_port, 2048-600),
+        l_servo(left_servo_port, l_initial),
+        r_servo(right_servo_port, r_initial),
         esw(end_switch_port)
 {
     l_servo.enable();
@@ -33,6 +33,7 @@ void Arm::calibrate()
     msleep(200);
 
     // reset the position counters
+    y_motor.enablePositionControl();
     y_motor.clearPositionCounter();
     y_motor.setAbsoluteTarget(0);
 

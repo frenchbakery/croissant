@@ -27,8 +27,8 @@ class Arm
         // settings
         const int max_y = 1350;  // max motor position count
         const float y_cm = 9.6;  // real life measurement
-        const int l_initial = 1125;
-        const int r_initial = 725;
+        const int l_initial = 1318; //1125
+        const int r_initial = 1024; //725
         const int max_grab = 300;
 
         /**
