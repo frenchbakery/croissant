@@ -15,8 +15,6 @@
 
 #include "pom_container.hpp"
 
-PomContainer go::pom_container(0);
-
 // servo position defs
 #define POSITION_OPEN 400
 #define POSITION_CLOSED 1119

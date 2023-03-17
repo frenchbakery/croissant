@@ -39,8 +39,3 @@ public:
     void close();
     void hold();
 };
-
-namespace go
-{
-    extern ::PomContainer pom_container;
-};

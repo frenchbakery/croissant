@@ -16,21 +16,29 @@
 #include <kipr/digital/digital.hpp>
 #include <kipr/analog/analog.hpp>
 
-#include "drivers/navigation/croissant/crnav.hpp"
-#include "drivers/croissant/pom_sorter/pom_container.hpp"
-#include "drivers/croissant/arm/arm.hpp"
+#include "global_objects.hpp"
+#include "utils.hpp"
 
 
-#define D2R(deg) ((deg)*M_PI/180)
+// pinout
+#define POM_SORTER_SERVO 0
+#define ARM_MOTOR_PORT 2
+#define ARM_LEFT_SERVO 1
+#define ARM_RIGHT_SERVO 2
+#define ARM_END_SWITCH 2
 
+// non-critical sensor calibration values
 #define CALIB_SPEED 500 // TPS
 #define LIGHT_THRESHOLD 1500
 
-#define MOTOR_PORT 2
-#define LEFT_SERVO 1
-#define RIGHT_SERVO 2
-#define END_SWITCH 2
 
+// global object pointer definition
+namespace go
+{
+    CRNav *nav = nullptr;
+    Arm *arm = nullptr;
+    PomContainer *pom = nullptr;
+}
 
 
 kipr::digital::Digital back_button_left(0);
@@ -40,25 +48,18 @@ kipr::analog::Analog line_right(1);
 
 
 
-namespace go
-{
-    CRNav *nav = nullptr;
-    Arm *arm = nullptr;
-
-}
-
 void straightLineSorter(double offset = 0)
 {
     double first_distance = 15;
     go::nav->driveDistance(first_distance + offset);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::pom_container.open();
+    go::pom->open();
     go::nav->driveDistance(41 - first_distance);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::pom_container.close();
-    //go::pom_container.hold();
+    go::pom->close();
+    //go::pom->hold();
     //correctAlignment();
 }
     void homeBase()
@@ -133,26 +134,8 @@ void alignFront()
     go::nav->enablePositionControl();
 }
 
-int main()
+void sortPoms()
 {
-    /*This part is the red pom pom sorter!*/
-
-    auto dmotor = std::make_shared<kp::PIDMotor>(5);
-    go::nav = new CRNav;
-    go::arm = new Arm(MOTOR_PORT, LEFT_SERVO, RIGHT_SERVO, END_SWITCH);
-    //Press button on Wombat before programm starts
-    //wait_for_side_button();
-
-    go::pom_container.initialize();
-    go::nav->initialize();
-    go::nav->setMotorSpeed(1200);
-
-    alignBack();
-    msleep(1000);
-
-    // drive to home positoin
-    homeBase();
-
     //get out of starting box
     go::nav->rotateBy(D2R(-90));
     go::nav->startSequence();
@@ -171,11 +154,11 @@ int main()
     homeBase();
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::pom_container.open();
+    go::pom->open();
     go::nav->driveDistance(30);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::pom_container.close();
+    go::pom->close();
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     
@@ -207,6 +190,18 @@ int main()
     go::nav->driveDistance(20);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
+}
+
+// what the robot should do whitout the cli (basically the normal main function)
+void defaultRun()
+{
+    alignBack();
+    msleep(1000);
+
+    // drive to home positoin
+    homeBase();
+
+    sortPoms();
 
     /*This part is the knock down Rock-A-Stack!*/
     go::nav->driveDistance(30);
@@ -230,8 +225,83 @@ int main()
     alignBack();
     go::nav->driveDistance(30);
     go::nav->rotateBy(-90);
+}
 
-    msleep(2000);
-    go::pom_container.terminate();
+int main()
+{
+    // Start a bogus motor because this is required for some reason to get the PID controller to work
+    auto dmotor = std::make_shared<kp::PIDMotor>(5);
+    // creating clobal objects
+    go::nav = new CRNav;
+    go::arm = new Arm(ARM_MOTOR_PORT, ARM_LEFT_SERVO, ARM_RIGHT_SERVO, ARM_END_SWITCH);
+    go::pom = new PomContainer(POM_SORTER_SERVO);
+
+    //Press button on Wombat before programm starts
+    //wait_for_side_button();
+
+
+    std::cout << "hello1" << std::endl;
+
+    // initializing required components
+    go::pom->initialize();
+    std::cout << "hello1" << std::endl;
+    go::nav->initialize();
+    std::cout << "hello1" << std::endl;
+    go::nav->setMotorSpeed(500);
+    std::cout << "hello1" << std::endl;
+    //go::arm->calibrate();
+
+    std::cout << "hello2" << std::endl;
+
+    // command loop (to be exported to CLI module)
+    bool cmdloop = true;
+    while (cmdloop)
+    {
+        int p1;
+        char cmd;
+        std::cout << ">> ";
+        std::cin >> cmd;
+        switch (cmd)
+        {
+        case 'a':
+            alignBack();
+            break;
+        case 'r':
+            std::cin >> p1;
+            go::nav->rotateBy(D2R(p1));
+            go::nav->startSequence();
+            break;
+        case 'd':
+            std::cin >> p1;
+            go::nav->driveDistance(p1);
+            go::nav->startSequence();
+            break;
+        case 'y':
+            std::cin >> p1;
+            go::arm->setYPerc(p1);
+            break;
+        case 't':
+            std::cin >> p1;
+            go::arm->tilt(p1);
+            break;
+        case 'g':
+            std::cin >> p1;
+            go::arm->grab(p1);
+            break;
+
+        case 's':   // "start"
+            defaultRun();
+            break;
+
+        case 'q':   // "start"
+            cmdloop = false;
+            break;
+        
+        default:
+            break;
+        }
+    }
+
+    go::pom->terminate();
     go::nav->terminate();
 }
