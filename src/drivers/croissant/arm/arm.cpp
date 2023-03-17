@@ -23,7 +23,7 @@ void Arm::calibrate()
     // reset servo positions
     int l_speed = l_servo.getSpeed();
     int r_speed = r_servo.getSpeed();
-
+    
     l_servo.setPosition(l_initial, 1024);
     r_servo.setPosition(r_initial, 1024);
 

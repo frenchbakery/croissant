@@ -64,26 +64,26 @@ int main()
     go::nav->initialize();
     go::nav->setMotorSpeed(1000);
 
-    int t = 0;
-    int g = 0;
-
     for (;;) {
-        std::cout << "Tilt";
-        std::cin >> t;
-        std::cout << "Grab";
-        std::cin >> g;
-
-        go::arm->tilt(t);
-        go::arm->waitForTilt();
-
-        go::arm->grab(g);
-        go::arm->waitForGrab();
+        
+        char cmd = ' ';
+        int tmp = 0;
+        std::cout << ">>";
+        std::cin >> cmd;
+        if (cmd == 'q')
+            break;
+        std::cin >> tmp;
+        
+        if (cmd == 't')
+            go::arm->tilt(tmp);
+        else if (cmd == 'g')
+            go::arm->grab(tmp);
+        else if (cmd == 'y')
+            go::arm->setYPerc(tmp);
 
     }
 
-
-    
-
+    go::nav->terminate();
     return 0;
 
     prepare_grab();
