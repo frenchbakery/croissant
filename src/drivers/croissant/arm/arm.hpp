@@ -29,7 +29,7 @@ class Arm
         const float y_cm = 9.6;  // real life measurement
         const int l_initial = 1500; //1125
         const int r_initial = 400; //725
-        const int max_grab = 300;
+        const int max_grab = 600;
 
         int l_servo_current = 0;
         int r_servo_current = 0;
