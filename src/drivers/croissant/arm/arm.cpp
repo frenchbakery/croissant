@@ -5,7 +5,7 @@
 
 Arm::Arm(int motor_port, int left_servo_port, int right_servo_port, int end_switch_port)
     : 
-        y_motor(motor_port), 
+        y_motor(motor_port, 500), 
         l_servo(left_servo_port, l_initial),
         r_servo(right_servo_port, r_initial),
         esw(end_switch_port)
