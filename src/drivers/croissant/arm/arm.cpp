@@ -46,6 +46,7 @@ void Arm::calibrate()
     l_servo.setSpeed(l_speed);
     r_servo.setSpeed(r_speed);
     std::cout << "servos done\n";
+    y_motor.enablePositionControl();
 }
 
 
