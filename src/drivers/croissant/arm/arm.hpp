@@ -27,15 +27,20 @@ class Arm
         // settings
         const int max_y = 1350;  // max motor position count
         const float y_cm = 9.6;  // real life measurement
-        const int l_initial = 1125;
-        const int r_initial = 725;
-        const int max_grab = 300;
+        const int l_initial = 1500; //1125
+        const int r_initial = 400; //725
+        const int max_grab = 600;
+
+        int l_servo_current = 0;
+        int r_servo_current = 0;
+        int l_servo_offset = 0;
+        int r_servo_offset = 0;
 
         /**
          * @brief turn of all motors / servos and block in an infinite loop
          * 
          */
-        void shutdownAndBlock(char *reason = "");
+        void shutdownAndBlock(const char *reason = "");
 
     public:
         Arm(

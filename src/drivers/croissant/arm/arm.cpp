@@ -6,10 +6,13 @@
 Arm::Arm(int motor_port, int left_servo_port, int right_servo_port, int end_switch_port)
     : 
         y_motor(motor_port), 
-        l_servo(left_servo_port, 600),
-        r_servo(right_servo_port, 2048-600),
+        l_servo(left_servo_port, l_initial),
+        r_servo(right_servo_port, r_initial),
         esw(end_switch_port)
 {
+    l_servo_current = l_initial;
+    r_servo_current = r_initial;
+
     l_servo.enable();
     r_servo.enable();
 };
@@ -20,7 +23,7 @@ void Arm::calibrate()
     // reset servo positions
     int l_speed = l_servo.getSpeed();
     int r_speed = r_servo.getSpeed();
-
+    
     l_servo.setPosition(l_initial, 1024);
     r_servo.setPosition(r_initial, 1024);
 
@@ -33,6 +36,7 @@ void Arm::calibrate()
     msleep(200);
 
     // reset the position counters
+    y_motor.enablePositionControl();
     y_motor.clearPositionCounter();
     y_motor.setAbsoluteTarget(0);
 
@@ -78,7 +82,7 @@ float Arm::getYcm()
 }
 
 
-void Arm::shutdownAndBlock(char *reason)
+void Arm::shutdownAndBlock(const char *reason)
 {
     if (reason != "")
         std::cout << reason;
@@ -115,9 +119,13 @@ void Arm::tilt(int angle)
     int angle_delta = current_angle - angle;
     float angle_perc = angle_delta / 90.0;
 
+    int add = 1024 * angle_perc;
+    
+    std::cout << "is: " << l_servo.getSetPosition() << ", " << r_servo.getSetPosition() << std::endl;
+
     // add / subtract angle delta from current angle
-    int r_pos = r_servo.getSetPosition() + 1024 * angle_perc;
-    int l_pos = l_servo.getSetPosition() - 1024 * angle_perc;
+    int l_pos = l_servo.getSetPosition() - add;
+    int r_pos = r_servo.getSetPosition() + add;
 
     // update servo positions
     r_servo.setPosition(r_pos);
