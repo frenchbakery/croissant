@@ -28,13 +28,14 @@ namespace go
 #define END_SWITCH 2
 
 
+kipr::analog::Analog line_left(5);
+
+
 void prepare_grab() 
 {
-    go::arm->setYcm(8);
+    go::arm->setYcm(7);
     go::arm->waitForY();
     go::arm->tilt(0);
-    go::arm->waitForTilt();
-    go::arm->tilt(90);
     go::arm->waitForTilt();
     go::arm->grab(0);
     go::arm->waitForGrab();
@@ -44,13 +45,14 @@ void prepare_grab()
 void grab_noodle() 
 {
     go::arm->grab(100);
+    go::arm->waitForGrab();
     go::nav->driveDistance(-30);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::arm->tilt(0);
+    go::arm->tilt(90);
+    go::arm->waitForTilt();
 }
 
-kipr::analog::Analog line_left(5);
 
 int main()
 {
@@ -62,12 +64,35 @@ int main()
     go::nav->initialize();
     go::nav->setMotorSpeed(1000);
 
-    //prepare_grab();
+    int t = 0;
+    int g = 0;
 
-    go::arm->tilt(90);
-    go::arm->waitForTilt();
-    go::arm->grab(100);
-    go::arm->waitForGrab();
+    for (;;) {
+        std::cout << "Tilt";
+        std::cin >> t;
+        std::cout << "Grab";
+        std::cin >> g;
+
+        go::arm->tilt(t);
+        go::arm->waitForTilt();
+
+        go::arm->grab(g);
+        go::arm->waitForGrab();
+
+    }
+
+
+    
+
+    return 0;
+
+    prepare_grab();
+
+    go::nav->driveDistance(30);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+
+    grab_noodle();
 
     // for (;;)
     // {
@@ -76,17 +101,9 @@ int main()
     //     msleep(100);
     // }
 
-    // for (;;)
-    // {
-    //     go::arm->tilt(0);
-    //     go::arm->waitForTilt();
-    //     msleep(100);
-    //     go::arm->tilt(90);
-    //     go::arm->waitForTilt();
-    //     msleep(100);
-    // }
-
     msleep(2000);
 
     go::nav->terminate();
 }
+
+
