@@ -51,10 +51,24 @@ class Arm
         );
 
         /**
-         * @brief set initial motor position and calibrate range
+         * @brief initializes servos and motor 
          * 
+         * @retval ok
          */
-        void calibrate();
+        el::retcode initialize();
+
+        /**
+         * @brief stops position control and disables motors and servo
+         * 
+         * @retval ok
+         */
+        el::retcode terminate();
+
+        /**
+         * @brief set initial motor position and calibrate range
+         * of the y motor
+         */
+        void calibrateY();
 
         /**
          * @brief set the arm height in percent (0...down, 100...up)

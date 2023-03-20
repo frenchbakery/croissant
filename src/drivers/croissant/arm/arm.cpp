@@ -12,20 +12,46 @@ Arm::Arm(int motor_port, int left_servo_port, int right_servo_port, int end_swit
 {
     l_servo_current = l_initial;
     r_servo_current = r_initial;
-
-    l_servo.enable();
-    r_servo.enable();
 };
 
-
-void Arm::calibrate()
+el::retcode Arm::initialize()
 {
+    l_servo.enable();
+    r_servo.enable();
+
     // reset servo positions
     int l_speed = l_servo.getSpeed();
     int r_speed = r_servo.getSpeed();
     
     l_servo.setPosition(l_initial, 1024);
     r_servo.setPosition(r_initial, 1024);
+
+    l_servo.waitUntilComleted();
+    r_servo.waitUntilComleted();
+    l_servo.setSpeed(l_speed);
+    r_servo.setSpeed(r_speed);
+
+    y_motor.setAbsoluteTarget(0);
+    y_motor.clearPositionCounter();
+    y_motor.enablePositionControl();
+
+    return el::retcode::ok;
+}
+
+el::retcode Arm::terminate()
+{
+    y_motor.off();
+
+    l_servo.disable();
+    r_servo.disable();
+
+    return el::retcode::ok;
+}
+
+void Arm::calibrateY()
+{
+    y_motor.disablePositionControl();
+    msleep(20);
 
     // wait for motor to reach end
     y_motor.moveAtVelocity(-100);
@@ -36,16 +62,8 @@ void Arm::calibrate()
     msleep(200);
 
     // reset the position counters
-    y_motor.enablePositionControl();
     y_motor.clearPositionCounter();
     y_motor.setAbsoluteTarget(0);
-
-    // wait for servos to travel and rollback their speed
-    l_servo.waitUntilComleted();
-    r_servo.waitUntilComleted();
-    l_servo.setSpeed(l_speed);
-    r_servo.setSpeed(r_speed);
-    std::cout << "servos done\n";
     y_motor.enablePositionControl();
 }
 
