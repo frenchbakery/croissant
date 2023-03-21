@@ -17,6 +17,7 @@ namespace sq
     void alignBack();
     void alignLine();
     void alignFront();
+    void alignRight();
     /**
      * @brief tracks the black line and follows it using the configured navigation 
      * speed until the front distance sensor has reached a threshold
@@ -28,9 +29,11 @@ namespace sq
 
     // == Setup
     void driveBaseOffset();
+    void homeToPomStart();
+    void pomEndToNoodleStart();
 
     // == Pom sorting
-    void sortOnePom(double offset = 0);
+    void sortOnePom(double offset1 = 0, double offset2 = 0);
     void sortPoms();
 
     // == Noodles

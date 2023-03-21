@@ -34,14 +34,25 @@ namespace go
 // what the robot should do whitout the cli (basically the normal main function)
 void defaultRun()
 {
+    // home coordinate system
     sq::alignBack();
+
     msleep(1000);
 
-    // drive to home positoin
+    // drive to home position
     sq::driveBaseOffset();
+    // drive to collection starting point
+    sq::homeToPomStart();
+    // collect poms
     sq::sortPoms();
+    // drive to noodle start point
+    sq::pomEndToNoodleStart();
+    // get middle noodle and place on rack
+    sq::doNoodleTask();
+
 
     /*This part is the knock down Rock-A-Stack!*/
+    /*
     go::nav->driveDistance(30);
     go::arm-> setYPerc(100);
     go::arm->waitForY();
@@ -63,6 +74,7 @@ void defaultRun()
     sq::alignBack();
     go::nav->driveDistance(30);
     go::nav->rotateBy(-90);
+    */
 }
 
 int main()
@@ -79,7 +91,9 @@ int main()
 
     // initializing required components
     go::pom->initialize();
+    go::pom->close();
     go::arm->initialize();
+    go::arm->setServoSpeed(ARM_SERVO_SPEED);
     go::nav->initialize();
     go::nav->setMotorSpeed(NAV_SPEED);
     
@@ -107,6 +121,8 @@ int main()
                 sq::alignFront();
             else if (cmd == 'l')
                 sq::alignLine();
+            else if (cmd == 'r')
+                sq::alignRight();
             else if (cmd == 'c')
                 sq::centerOnLine();
             else if (cmd == 't')
@@ -161,6 +177,27 @@ int main()
             
             case 'a':   // all
                 sq::doNoodleTask();
+                break;
+            
+            default:
+                break;
+            }
+            break;
+        }
+        case 'p':
+        {
+            std::cin >> cmd;
+            switch (cmd)
+            {
+            case 'b':
+                sq::driveBaseOffset();
+                break;
+            case 's':   // up
+                sq::sortPoms();
+                break;
+            case 'a':
+                sq::driveBaseOffset();
+                sq::sortPoms();
                 break;
             
             default:

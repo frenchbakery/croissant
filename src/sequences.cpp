@@ -124,6 +124,23 @@ void sq::alignFront()
     go::nav->enablePositionControl();
 }
 
+void sq::alignRight()
+{
+    go::nav->disablePositionControl();
+
+    go::nav->driveLeftSpeed(300);
+    go::nav->driveRightSpeed(-300);
+
+    while (line_right.value() < LIGHT_THRESHOLD)
+        msleep(1);
+
+    go::nav->driveLeftSpeed(0);
+    go::nav->driveRightSpeed(0);
+
+    go::nav->resetPositionControllers();
+    go::nav->enablePositionControl();
+}
+
 void sq::trackLineUntil(int pos_threshold)
 {
     go::nav->disablePositionControl();
@@ -171,13 +188,13 @@ void sq::centerOnLine()
 
     while (line_left.value() < LIGHT_THRESHOLD)
     {
-        go::nav->driveLeftSpeed(200);
+        go::nav->driveLeftSpeed(300);
     }
     go::nav->driveLeftSpeed(0);
 
     while (line_right.value() < LIGHT_THRESHOLD)
     {
-        go::nav->driveLeftSpeed(-200);
+        go::nav->driveLeftSpeed(-300);
     }
     go::nav->driveLeftSpeed(0);
 
@@ -186,20 +203,19 @@ void sq::centerOnLine()
     go::nav->resetPositionControllers();
     go::nav->enablePositionControl();
 
-    go::nav->rotateBy(D2R(-8));
+    go::nav->rotateBy(D2R(-10));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 }
 
-
-void sq::sortOnePom(double offset)
+void sq::sortOnePom(double offset1, double offset2)
 {
     double first_distance = 15;
-    go::nav->driveDistance(first_distance + offset);
+    go::nav->driveDistance(first_distance + offset1);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     go::pom->open();
-    go::nav->driveDistance(41 - first_distance);
+    go::nav->driveDistance(41 - first_distance + offset2);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     go::pom->close();
@@ -213,7 +229,7 @@ void sq::driveBaseOffset()
     msleep(1000);
 }
 
-void sq::sortPoms()
+void sq::homeToPomStart()
 {
     //get out of starting box
     go::nav->rotateBy(D2R(-90));
@@ -225,7 +241,18 @@ void sq::sortPoms()
     go::nav->rotateBy(D2R(90));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
+}
 
+void sq::pomEndToNoodleStart()
+{
+    go::nav->driveDistance(113);
+    go::nav->rotateBy(D2R(90));
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+}
+
+void sq::sortPoms()
+{
     //collect fist poms
     sq::alignBack();
     go::pom->open();
@@ -238,7 +265,13 @@ void sq::sortPoms()
     go::nav->driveDistance(-6);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::nav->rotateBy(D2R(-265));
+    go::nav->rotateBy(D2R(-270));
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+
+    // align to line
+    sq::alignRight();
+    go::nav->rotateBy(D2R(19));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 
@@ -247,27 +280,26 @@ void sq::sortPoms()
     {
         if (i == 0)
             sq::sortOnePom(-15);
+        else if (i == 3)
+            sq::sortOnePom(0, -10);
         else
             sq::sortOnePom();
     }
     
     //Turns 180 to drive in other direction
-    go::nav->driveDistance(-10);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::nav->rotateBy(D2R(180));
+    go::nav->driveDistance(-25);
+    go::nav->rotateBy(D2R(90));
+    go::nav->driveDistance(10);
+    go::nav->rotateBy(D2R(90));
+    go::nav->driveDistance(-20);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     sq::alignBack();
-    go::nav->driveDistance(20);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
 }
-
 
 void sq::approachRack()
 {
-    sq::trackLineUntil(2400);
+    sq::trackLineUntil(2600);
     std::cout << "now center" << std::endl;
     sq::centerOnLine();
     std::cout << "now center done" << std::endl;
@@ -286,22 +318,29 @@ void sq::pickUpNoodle()
     go::nav->awaitSequenceComplete();
 
     go::arm->setYPerc(70);
-    go::arm->waitForY();
+    //go::arm->waitForY();
+    msleep(200);
 
     go::arm->grab(70);
-    go::arm->waitForGrab();
+    //go::arm->waitForGrab();
+    msleep(400);
     go::nav->driveDistance(-8);
     go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
+    //go::nav->awaitSequenceComplete();
+    msleep(800);
     go::arm->grab(10);
-    go::arm->waitForGrab();
+    //go::arm->waitForGrab();
+    msleep(400);
     go::arm->setYPerc(90);
-    go::arm->waitForY();
+    //go::arm->waitForY();
+    msleep(400);
     go::nav->driveDistance(8);
     go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
+    //go::nav->awaitSequenceComplete();
+    msleep(1000);
     go::arm->setYPerc(70);
-    go::arm->waitForY();
+    //go::arm->waitForY();
+    msleep(200);
     go::arm->grab(70);
     go::arm->waitForGrab();
 
@@ -314,19 +353,23 @@ void sq::placeNoodle()
 {
     go::arm->setYPerc(90);
     sq::alignFront();
-    go::arm->grab(30);
+    go::arm->grab(45);
     go::arm->setYPerc(10);
+    go::nav->driveDistance(-1);
+    go::nav->driveDistance(1);
     go::arm->waitForGrab();
     go::arm->waitForY();
+    go::nav->startSequence();
+    while (!go::nav->sequenceComplete())
+    {
+        go::arm->grab(25);
+        go::arm->waitForGrab();
+        go::arm->grab(50);
+        go::arm->waitForGrab();
+    }
 
     go::arm->grab(0);
     go::arm->waitForGrab();
-    go::arm->grab(40);
-    go::arm->waitForGrab();
-    go::arm->grab(0);
-    go::arm->waitForGrab();
-
-    msleep(1000);
 
     go::nav->driveDistance(-10);
     go::nav->startSequence();
@@ -335,13 +378,10 @@ void sq::placeNoodle()
 
 void sq::doNoodleTask()
 {
-    go::nav->rotateBy(D2R(190));
-    go::nav->startSequence();
     std::thread clthread(&Arm::calibrateY, go::arm);
-    go::nav->awaitSequenceComplete();
-    if (clthread.joinable()) clthread.join();
 
     sq::approachRack();
+    if (clthread.joinable()) clthread.join();
     sq::pickUpNoodle();
 
     go::arm->tilt(90);
@@ -357,4 +397,5 @@ void sq::doNoodleTask()
     go::nav->driveDistance(-15);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
+    
 }

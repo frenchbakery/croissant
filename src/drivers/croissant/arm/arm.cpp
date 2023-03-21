@@ -54,7 +54,7 @@ void Arm::calibrateY()
     msleep(20);
 
     // wait for motor to reach end
-    y_motor.moveAtVelocity(-100);
+    y_motor.moveAtVelocity(-200);
     while (!esw.value()) { msleep(10); };
     y_motor.off();
 
