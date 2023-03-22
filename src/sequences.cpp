@@ -203,7 +203,7 @@ void sq::centerOnLine()
     go::nav->resetPositionControllers();
     go::nav->enablePositionControl();
 
-    go::nav->rotateBy(D2R(-10));
+    go::nav->rotateBy(D2R(-7));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 }
@@ -226,7 +226,6 @@ void sq::driveBaseOffset()
     go::nav->driveDistance(5);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    msleep(1000);
 }
 
 void sq::homeToPomStart()
@@ -243,10 +242,30 @@ void sq::homeToPomStart()
     go::nav->awaitSequenceComplete();
 }
 
+void sq::homeToKnock()
+{
+    std::thread clthread(&Arm::calibrateY, go::arm);
+    
+    go::nav->driveDistance(8.5);
+    go::nav->rotateBy(D2R(90));
+    go::nav->startSequence();
+
+    if (clthread.joinable()) clthread.join();
+    go::nav->awaitSequenceComplete();
+}
+
 void sq::pomEndToNoodleStart()
 {
     go::nav->driveDistance(113);
     go::nav->rotateBy(D2R(90));
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+}
+
+void sq::knockEndToNoodleStart()
+{
+    go::nav->driveDistance(30);
+    go::nav->rotateBy(D2R(-90));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 }
@@ -398,4 +417,20 @@ void sq::doNoodleTask()
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     
+}
+
+
+void sq::knockOverStand()
+{
+    go::arm->setYPerc(70);
+    go::nav->driveDistance(60);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+
+    go::arm->setYPerc(15);
+    go::arm->waitForY();
+    go::nav->driveDistance(-70);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+
 }

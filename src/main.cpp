@@ -36,11 +36,15 @@ void defaultRun()
 {
     // home coordinate system
     sq::alignBack();
-
-    msleep(1000);
-
+    msleep(500);
     // drive to home position
     sq::driveBaseOffset();
+
+    // wait for light (right now just wait for input)
+    char bogus;
+    std::cin >> bogus;
+
+    /*
     // drive to collection starting point
     sq::homeToPomStart();
     // collect poms
@@ -49,32 +53,14 @@ void defaultRun()
     sq::pomEndToNoodleStart();
     // get middle noodle and place on rack
     sq::doNoodleTask();
-
-
-    /*This part is the knock down Rock-A-Stack!*/
-    /*
-    go::nav->driveDistance(30);
-    go::arm-> setYPerc(100);
-    go::arm->waitForY();
-    go::arm->setYPerc(50);
-    go::arm->waitForY();
-    go::arm->grab(0);
-    go::arm->waitForGrab();
-    go::arm->setYPerc(0);
-    go::arm->waitForY();
-    go::arm->grab(50);
-    go::arm->waitForGrab();
-    go::arm->setYPerc(100);
-    go::arm->waitForY(); 
-    go::nav->driveDistance(-30);
-    go::arm->grab(0);
-    go::arm->waitForGrab();
-    go::nav->driveDistance(-10);
-    go::nav->rotateBy(90);
-    sq::alignBack();
-    go::nav->driveDistance(30);
-    go::nav->rotateBy(-90);
     */
+
+    sq::homeToKnock();
+    sq::knockOverStand();
+
+    sq::knockEndToNoodleStart();
+
+    sq::doNoodleTask();
 }
 
 int main()

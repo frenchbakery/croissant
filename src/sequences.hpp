@@ -30,7 +30,9 @@ namespace sq
     // == Setup
     void driveBaseOffset();
     void homeToPomStart();
+    void homeToKnock();
     void pomEndToNoodleStart();
+    void knockEndToNoodleStart();
 
     // == Pom sorting
     void sortOnePom(double offset1 = 0, double offset2 = 0);
@@ -41,5 +43,8 @@ namespace sq
     void pickUpNoodle();
     void placeNoodle();
     void doNoodleTask();
+
+    // == Rocka-Stand
+    void knockOverStand();
 
 } // namespace sq
