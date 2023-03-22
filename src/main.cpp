@@ -154,12 +154,17 @@ int main()
             switch (cmd)
             {
             case 'u':   // up
-                sq::pickUpNoodle();
+                sq::pickUpNoodleFromRack();
                 break;
 
             case 'd':   // down
-                sq::placeNoodle();
+                sq::placeNoodleOnStand();
                 break;
+
+            case 'g':   // grabup
+                sq::pickUpNoodleFromStand();
+                break;
+                
             
             case 'a':   // all
                 sq::doNoodleTask();

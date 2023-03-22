@@ -324,7 +324,7 @@ void sq::approachRack()
     std::cout << "now center done" << std::endl;
 }
 
-void sq::pickUpNoodle()
+void sq::pickUpNoodleFromRack()
 {
     go::arm->tilt(0);
     //go::nav->set
@@ -368,7 +368,21 @@ void sq::pickUpNoodle()
     go::nav->awaitSequenceComplete();
 }
 
-void sq::placeNoodle()
+void sq::pickUpNoodleFromStand()
+{
+    go::arm->setYPerc(0);
+    sq::alignFront();
+    go::arm->waitForY();
+    go::arm->grab(70);
+    go::arm->waitForGrab();
+    go::arm->setYPerc(90);
+    go::nav->driveDistance(10);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    go::arm->waitForY();
+}
+
+void sq::placeNoodleOnStand()
 {
     go::arm->setYPerc(90);
     sq::alignFront();
@@ -401,7 +415,7 @@ void sq::doNoodleTask()
 
     sq::approachRack();
     if (clthread.joinable()) clthread.join();
-    sq::pickUpNoodle();
+    sq::pickUpNoodleFromRack();
 
     go::arm->tilt(90);
     go::nav->rotateBy(D2R(-190));
@@ -411,7 +425,7 @@ void sq::doNoodleTask()
 
     sq::trackLineUntil(2800);
 
-    sq::placeNoodle();
+    sq::placeNoodleOnStand();
 
     go::nav->driveDistance(-15);
     go::nav->startSequence();

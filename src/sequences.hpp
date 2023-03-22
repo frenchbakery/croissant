@@ -40,9 +40,11 @@ namespace sq
 
     // == Noodles
     void approachRack();
-    void pickUpNoodle();
-    void placeNoodle();
+    void pickUpNoodleFromRack();
+    void pickUpNoodleFromStand();
+    void placeNoodleOnStand();
     void doNoodleTask();
+    void dropNoodle();
 
     // == Rocka-Stand
     void knockOverStand();
