@@ -208,6 +208,16 @@ void sq::centerOnLine()
     go::nav->awaitSequenceComplete();
 }
 
+
+void sq::alignFromDropPosition(double distance)
+{
+    go::nav->driveDistance(-distance);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    sq::alignBack();
+}
+
+
 void sq::sortOnePom(double offset1, double offset2)
 {
     double first_distance = 15;
@@ -246,7 +256,7 @@ void sq::homeToKnock()
 {
     std::thread clthread(&Arm::calibrateY, go::arm);
     
-    go::nav->driveDistance(8.5);
+    go::nav->driveDistance(8);
     go::nav->rotateBy(D2R(90));
     go::nav->startSequence();
 
@@ -370,15 +380,14 @@ void sq::pickUpNoodleFromRack()
 
 void sq::pickUpNoodleFromStand()
 {
+    go::arm->grab(10);
     go::arm->setYPerc(0);
+    go::arm->waitForGrab();
     sq::alignFront();
     go::arm->waitForY();
     go::arm->grab(70);
     go::arm->waitForGrab();
     go::arm->setYPerc(90);
-    go::nav->driveDistance(10);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
     go::arm->waitForY();
 }
 
@@ -404,35 +413,107 @@ void sq::placeNoodleOnStand()
     go::arm->grab(0);
     go::arm->waitForGrab();
 
-    go::nav->driveDistance(-10);
+}
+
+void sq::dropNoodle()
+{
+    go::arm->tilt(45);
+    go::arm->waitForTilt();
+    go::arm->grab(0);
+    go::arm->waitForGrab();
+}
+
+void sq::dropBehind()
+{
+    go::nav->rotateBy(D2R(180));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
+    sq::dropNoodle();
+
 }
+
 
 void sq::doNoodleTask()
 {
-    std::thread clthread(&Arm::calibrateY, go::arm);
-
+    // get red noodle and place on rack
     sq::approachRack();
-    if (clthread.joinable()) clthread.join();
     sq::pickUpNoodleFromRack();
-
+    
     go::arm->tilt(90);
-    go::nav->rotateBy(D2R(-190));
+    go::nav->rotateBy(D2R(-180));
     go::nav->startSequence();
     go::arm->waitForTilt();
     go::nav->awaitSequenceComplete();
 
     sq::trackLineUntil(2800);
 
+    sq::centerOnLine();
+
     sq::placeNoodleOnStand();
 
     go::nav->driveDistance(-15);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
+
+    // drive to leftmost noodle
+    go::nav->rotateBy(D2R(90));
+    go::nav->driveDistance(21);
+    go::nav->rotateBy(D2R(-90));
+    go::nav->driveDistance(10);
+    go::arm->grab(10);
+    go::arm->waitForGrab();
+    go::arm->tilt(90);
+    go::arm->calibrateY();
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    go::arm->waitForTilt();
+    go::arm->waitForCalibrate();
+
+    // pick it up
+    sq::pickUpNoodleFromStand();
+
+    // drop behind and realign
+    go::nav->driveDistance(-15);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    sq::dropBehind();
+    // while aligning, reset the positions to what is needed for the next operation
+    go::arm->grab(10);
+    go::arm->waitForGrab();
+    go::arm->tilt(90);
+    go::arm->calibrateY();
+    sq::alignFromDropPosition(0);
+    go::arm->waitForTilt();
+    go::arm->waitForCalibrate();
+
+
+    // drive to the second to right most noodle
+    go::nav->driveDistance(20);
+    go::nav->rotateBy(D2R(-90));
+    go::nav->driveDistance(11);
+    go::nav->rotateBy(D2R(-90));
+    go::nav->driveDistance(5);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+
+    // pick it up
+    sq::pickUpNoodleFromStand();
+
+    // drop behind and realign
+    go::nav->driveDistance(-15);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    sq::dropBehind();
+    // while aligning, reset the positions to what is needed for the next operation
+    go::arm->grab(10);
+    go::arm->waitForGrab();
+    go::arm->tilt(90);
+    go::arm->setYPerc(0);
+    sq::alignFromDropPosition(0);
+    go::arm->waitForTilt();
+    go::arm->waitForY();
     
 }
-
 
 void sq::knockOverStand()
 {

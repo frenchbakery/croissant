@@ -14,6 +14,14 @@ Arm::Arm(int motor_port, int left_servo_port, int right_servo_port, int end_swit
     r_servo_current = r_initial;
 };
 
+Arm::~Arm()
+{
+    calibrate_abort = true;
+    
+    if (calib_thread.joinable())
+        calib_thread.join();
+}
+
 el::retcode Arm::initialize()
 {
     l_servo.enable();
@@ -50,23 +58,48 @@ el::retcode Arm::terminate()
 
 void Arm::calibrateY()
 {
-    y_motor.disablePositionControl();
-    msleep(20);
+    if (calibrate_in_progress) return;
 
-    // wait for motor to reach end
-    y_motor.moveAtVelocity(-200);
-    while (!esw.value()) { msleep(10); };
-    y_motor.off();
+    // join thread if it is not joined already
+    if (calib_thread.joinable())
+        calib_thread.join();
+    
+    calibrate_in_progress = true;
 
-    // wait a little bit longer so the motor actually stops
-    msleep(200);
+    calib_thread = std::thread([this](){
+        this->y_motor.disablePositionControl();
+        msleep(20);
 
-    // reset the position counters
-    y_motor.clearPositionCounter();
-    y_motor.setAbsoluteTarget(0);
-    y_motor.enablePositionControl();
+        // wait for motor to reach end
+        this->y_motor.moveAtVelocity(-200);
+        while (!esw.value()) { 
+            if ((bool)(this->calibrate_abort))
+            {
+                this->y_motor.off();
+                this->calibrate_in_progress = false;
+                return;
+            }
+            msleep(10); 
+        };
+        this->y_motor.off();
+
+        // wait a little bit longer so the motor actually stops
+        msleep(200);
+
+        // reset the position counters
+        this->y_motor.clearPositionCounter();
+        this->y_motor.setAbsoluteTarget(0);
+        this->y_motor.enablePositionControl();
+
+        this->calibrate_in_progress = false;
+    });
 }
 
+void Arm::waitForCalibrate()
+{
+    if (calib_thread.joinable())
+        calib_thread.join();
+}
 
 void Arm::setYPerc(float percent)
 {
@@ -76,6 +109,7 @@ void Arm::setYPerc(float percent)
         y_motor.off();
         shutdownAndBlock();
     }
+    y_motor.enablePositionControl();
     y_motor.setAbsoluteTarget(max_y * (percent / 100));
 }
 
@@ -91,6 +125,7 @@ void Arm::setYcm(float cm)
         std::cout << "Invalid cm value: " << cm << "cm when max height is " << y_cm << "cm\n";
         shutdownAndBlock();
     }
+    y_motor.enablePositionControl();
     y_motor.setAbsoluteTarget((cm / y_cm) * max_y);
 }
 

@@ -27,6 +27,9 @@ namespace sq
     void trackLineUntil(int pos_threshold);
     void centerOnLine();
 
+    // == Special alignment procedures
+    void alignFromDropPosition(double distance);
+
     // == Setup
     void driveBaseOffset();
     void homeToPomStart();
@@ -43,8 +46,10 @@ namespace sq
     void pickUpNoodleFromRack();
     void pickUpNoodleFromStand();
     void placeNoodleOnStand();
-    void doNoodleTask();
     void dropNoodle();
+    void dropBehind();  // turns 180, drives distance, drops
+    void doNoodleTask();
+    
 
     // == Rocka-Stand
     void knockOverStand();

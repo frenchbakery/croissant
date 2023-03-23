@@ -153,19 +153,22 @@ int main()
             std::cin >> cmd;
             switch (cmd)
             {
-            case 'u':   // up
+            case 'r':   // rack
                 sq::pickUpNoodleFromRack();
                 break;
 
-            case 'd':   // down
+            case 's':   // stand
                 sq::placeNoodleOnStand();
                 break;
 
-            case 'g':   // grabup
+            case 'p':   // pickup
                 sq::pickUpNoodleFromStand();
                 break;
+
+            case 'd':   // drop
+                sq::dropNoodle();
+                break;
                 
-            
             case 'a':   // all
                 sq::doNoodleTask();
                 break;

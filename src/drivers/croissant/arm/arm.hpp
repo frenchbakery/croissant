@@ -23,6 +23,9 @@ class Arm
         kp::SmoothServo l_servo;
         kp::SmoothServo r_servo;
         kipr::digital::Digital esw;
+        std::thread calib_thread;
+        std::atomic_bool calibrate_in_progress{false};
+        std::atomic_bool calibrate_abort{false};
         float current_angle = 90;
         int grab_current = 0;
 
@@ -52,6 +55,8 @@ class Arm
             int end_switch_port
         );
 
+        ~Arm();
+
         /**
          * @brief initializes servos and motor 
          * 
@@ -71,6 +76,8 @@ class Arm
          * of the y motor
          */
         void calibrateY();
+
+        void waitForCalibrate();
 
         /**
          * @brief set the arm height in percent (0...down, 100...up)
