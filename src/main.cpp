@@ -46,7 +46,8 @@ void defaultRun()
 
     // wait for light (right now just wait for input)
     calibrateLightSensor(wait_for_light_sensor);
-    waitForLight(wait_for_light_sensor);
+    waitForLightOrInput(wait_for_light_sensor);
+
 
     /*
     // drive to collection starting point

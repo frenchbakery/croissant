@@ -40,9 +40,22 @@ static void calibrateLightSensor(kipr::analog::Analog &light_sensor)
     std::cout << "light_range=" << light_range << std::endl;
 }
 
-static void waitForLight(kipr::analog::Analog &light_sensor)
+static void waitForLightOrInput(kipr::analog::Analog &light_sensor)
 {
-    while (light_sensor.value() > ambient_light - (light_range * 2)) msleep(10);
+    for (;;)
+    {
+        auto val = light_sensor.value();
+        if (val < ambient_light - (light_range * 2)) break;
+        // check for standard input
+        if (std::cin.peek() != std::char_traits<char>::eof()) 
+        {
+            std::cin.get();
+            break;
+        }
+
+        msleep(10);
+    }
+    
     //while (light_sensor.value() < )
 }
 

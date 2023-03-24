@@ -342,7 +342,7 @@ void sq::pickUpNoodleFromRack()
     go::arm->waitForY();
     go::arm->waitForTilt();
     
-    go::nav->driveDistance(10);
+    go::nav->driveDistance(9);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 
@@ -371,6 +371,8 @@ void sq::pickUpNoodleFromRack()
     //go::arm->waitForY();
     msleep(200);
     go::arm->grab(70);
+    // wait at least 10 seconds for other robot to pass by
+    msleep(6000);
     go::arm->waitForGrab();
 
     go::nav->driveDistance(-30);
@@ -380,7 +382,7 @@ void sq::pickUpNoodleFromRack()
 
 void sq::pickUpNoodleFromStand()
 {
-    go::arm->grab(10);
+    go::arm->grab(20);
     go::arm->setYPerc(0);
     go::arm->waitForGrab();
     sq::alignFront();
@@ -460,7 +462,7 @@ void sq::doNoodleTask()
     go::nav->driveDistance(21);
     go::nav->rotateBy(D2R(-90));
     go::nav->driveDistance(10);
-    go::arm->grab(10);
+    go::arm->grab(20);
     go::arm->waitForGrab();
     go::arm->tilt(90);
     go::arm->calibrateY();
@@ -492,6 +494,7 @@ void sq::doNoodleTask()
     go::nav->rotateBy(D2R(-90));
     go::nav->driveDistance(11);
     go::nav->rotateBy(D2R(-90));
+    go::arm->grab(20);
     // go::nav->driveDistance(5);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
@@ -504,18 +507,19 @@ void sq::doNoodleTask()
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
     sq::dropBehind();
-    // while aligning, reset the positions to what is needed for the next operation
-    go::arm->grab(10);
-    go::arm->waitForGrab();
     go::arm->tilt(90);
-    go::arm->setYPerc(0);
-    go::nav->driveDistance(-15);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
+    go::arm->waitForTilt();
+    // while aligning, reset the positions to what is needed for the next operation
+    // go::arm->grab(10);
+    // go::arm->waitForGrab();
+    // go::arm->tilt(90);
+    // go::arm->setYPerc(0);
+    // go::nav->driveDistance(-15);
+    // go::nav->startSequence();
+    // go::nav->awaitSequenceComplete();
     // sq::alignFromDropPosition(0);
     // go::arm->waitForTilt();
     // go::arm->waitForY();
-    
 }
 
 void sq::knockOverStand()
