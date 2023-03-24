@@ -254,13 +254,13 @@ void sq::homeToPomStart()
 
 void sq::homeToKnock()
 {
-    std::thread clthread(&Arm::calibrateY, go::arm);
-    
+    go::arm->calibrateY();
     go::nav->driveDistance(8);
     go::nav->rotateBy(D2R(90));
+    
     go::nav->startSequence();
 
-    if (clthread.joinable()) clthread.join();
+    go::arm->waitForCalibrate();
     go::nav->awaitSequenceComplete();
 }
 
@@ -455,7 +455,7 @@ void sq::doNoodleTask()
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 
-    // drive to leftmost noodle
+    // drive to second to right most noodle
     go::nav->rotateBy(D2R(90));
     go::nav->driveDistance(21);
     go::nav->rotateBy(D2R(-90));
@@ -487,12 +487,12 @@ void sq::doNoodleTask()
     go::arm->waitForCalibrate();
 
 
-    // drive to the second to right most noodle
+    // drive to the right most noodle
     go::nav->driveDistance(20);
     go::nav->rotateBy(D2R(-90));
     go::nav->driveDistance(11);
     go::nav->rotateBy(D2R(-90));
-    go::nav->driveDistance(5);
+    // go::nav->driveDistance(5);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 
@@ -509,15 +509,18 @@ void sq::doNoodleTask()
     go::arm->waitForGrab();
     go::arm->tilt(90);
     go::arm->setYPerc(0);
-    sq::alignFromDropPosition(0);
-    go::arm->waitForTilt();
-    go::arm->waitForY();
+    go::nav->driveDistance(-15);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    // sq::alignFromDropPosition(0);
+    // go::arm->waitForTilt();
+    // go::arm->waitForY();
     
 }
 
 void sq::knockOverStand()
 {
-    go::arm->setYPerc(70);
+    go::arm->setYPerc(60);
     go::nav->driveDistance(60);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();

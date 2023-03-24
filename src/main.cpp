@@ -20,6 +20,7 @@
 #include "utils.hpp"
 #include "defs.hpp"
 #include "sequences.hpp"
+#include "waitforlight.h"
 
 
 // global object pointer definition
@@ -29,6 +30,9 @@ namespace go
     Arm *arm = nullptr;
     PomContainer *pom = nullptr;
 }
+
+// wait for light sensor
+kipr::analog::Analog wait_for_light_sensor(2);
 
 
 // what the robot should do whitout the cli (basically the normal main function)
@@ -41,8 +45,8 @@ void defaultRun()
     sq::driveBaseOffset();
 
     // wait for light (right now just wait for input)
-    char bogus;
-    std::cin >> bogus;
+    calibrateLightSensor(wait_for_light_sensor);
+    waitForLight(wait_for_light_sensor);
 
     /*
     // drive to collection starting point
