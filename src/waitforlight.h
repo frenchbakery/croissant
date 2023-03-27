@@ -46,7 +46,7 @@ static void waitForLightOrInput(kipr::analog::Analog &light_sensor)
     {
         auto val = light_sensor.value();
         //if (val < ambient_light - (light_range * 2)) break;
-        std::cout << val << std::endl;
+        //std::cout << val << std::endl;
         if (val < 1500) break;
         // check for standard input
         /*if (std::cin.peek() != std::char_traits<char>::eof()) 

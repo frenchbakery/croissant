@@ -123,9 +123,6 @@ int main()
                 sq::trackLineUntil(p1);
             }
             break;
-        case 'b':
-            go::arm->calibrateY();
-            break;
 
         case 'r':
             std::cin >> p1;
@@ -149,9 +146,15 @@ int main()
             std::cin >> p1;
             go::arm->grab(p1);
             break;
-
+        
+        // S-Button on BotballUI
         case 's':   // "start"
             defaultRun();
+            break;
+        
+        // B-Button on BotballUI
+        case 'b':
+            go::arm->calibrateY();
             break;
 
         case 'q':   // "quit"
