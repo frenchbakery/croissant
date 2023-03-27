@@ -26,6 +26,7 @@ kipr::digital::Digital front_button_left(3);
 kipr::digital::Digital front_button_right(4);
 kipr::analog::Analog line_left(1);
 kipr::analog::Analog line_right(0);
+kipr::analog::Analog line_center(4);
 kipr::analog::Analog front_distance(3);
 
 
@@ -148,6 +149,8 @@ void sq::trackLineUntil(int pos_threshold)
     go::nav->driveLeftSpeed(CALIB_SPEED);
     go::nav->driveRightSpeed(CALIB_SPEED);
 
+    //int pos_threshold = 
+
     while (front_distance.value() < pos_threshold)
     {
         // true = white, false = dark
@@ -186,13 +189,13 @@ void sq::centerOnLine()
     go::nav->driveLeftSpeed(0);
     go::nav->driveRightSpeed(0);
 
-    while (line_left.value() < LIGHT_THRESHOLD)
+    /*while (line_center.value() > LIGHT_THRESHOLD)
     {
         go::nav->driveLeftSpeed(300);
     }
-    go::nav->driveLeftSpeed(0);
+    go::nav->driveLeftSpeed(0);*/
 
-    while (line_right.value() < LIGHT_THRESHOLD)
+    while (line_center.value() > LIGHT_THRESHOLD)
     {
         go::nav->driveLeftSpeed(-300);
     }
@@ -203,7 +206,7 @@ void sq::centerOnLine()
     go::nav->resetPositionControllers();
     go::nav->enablePositionControl();
 
-    go::nav->rotateBy(D2R(-7));
+    go::nav->rotateBy(D2R(-10));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 }
@@ -341,7 +344,6 @@ void sq::pickUpNoodleFromRack()
     go::arm->setYPerc(80);
     go::arm->waitForY();
     go::arm->waitForTilt();
-    
     go::nav->driveDistance(9);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
@@ -375,7 +377,7 @@ void sq::pickUpNoodleFromRack()
     msleep(6000);
     go::arm->waitForGrab();
 
-    go::nav->driveDistance(-30);
+    go::nav->driveDistance(-40);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 }
@@ -490,7 +492,7 @@ void sq::doNoodleTask()
 
 
     // drive to the right most noodle
-    go::nav->driveDistance(20);
+    go::nav->driveDistance(25);
     go::nav->rotateBy(D2R(-90));
     go::nav->driveDistance(11);
     go::nav->rotateBy(D2R(-90));

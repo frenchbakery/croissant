@@ -117,6 +117,8 @@ int main()
                 sq::alignRight();
             else if (cmd == 'c')
                 sq::centerOnLine();
+            else if (cmd == 'a')
+                sq::approachRack();
             else if (cmd == 't')
             {
                 std::cin >> p1;
