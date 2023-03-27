@@ -15,6 +15,7 @@
 #include <kipr/wait_for/wait_for.h>
 #include <kipr/digital/digital.hpp>
 #include <kipr/analog/analog.hpp>
+#include <kipr/wombat.h>
 
 #include "global_objects.hpp"
 #include "utils.hpp"
@@ -45,7 +46,7 @@ void defaultRun()
     sq::driveBaseOffset();
 
     // wait for light (right now just wait for input)
-    calibrateLightSensor(wait_for_light_sensor);
+    //calibrateLightSensor(wait_for_light_sensor);
     waitForLightOrInput(wait_for_light_sensor);
 
 
@@ -122,6 +123,10 @@ int main()
                 sq::trackLineUntil(p1);
             }
             break;
+        case 'b':
+            go::arm->calibrateY();
+            break;
+
         case 'r':
             std::cin >> p1;
             go::nav->rotateBy(D2R(p1));
