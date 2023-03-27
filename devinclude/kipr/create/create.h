@@ -593,7 +593,7 @@ EXPORT_SYM void create_spin_block(int speed, int angle);
  * \note Not yet implemented
  * \ingroup create
  */
-EXPORT_SYM int _create_get_raw_encoders(long *lenc, long *renc);
+EXPORT_SYM int _create_get_raw_encoders(short *lenc, short *renc);
 
 /*!
  * Loads a song for playing on the create

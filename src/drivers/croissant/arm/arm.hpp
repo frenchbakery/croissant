@@ -8,7 +8,9 @@
  * @copyright Copyright (c) 2023
  * 
  */
+
 #pragma once
+
 #include <kiprplus/smooth_servo.hpp>
 #include <kipr/digital/digital.hpp>
 #include <kiprplus/pid_motor.hpp>
@@ -21,6 +23,9 @@ class Arm
         kp::SmoothServo l_servo;
         kp::SmoothServo r_servo;
         kipr::digital::Digital esw;
+        std::thread calib_thread;
+        std::atomic_bool calibrate_in_progress{false};
+        std::atomic_bool calibrate_abort{false};
         float current_angle = 90;
         int grab_current = 0;
 
@@ -50,11 +55,29 @@ class Arm
             int end_switch_port
         );
 
+        ~Arm();
+
+        /**
+         * @brief initializes servos and motor 
+         * 
+         * @retval ok
+         */
+        el::retcode initialize();
+
+        /**
+         * @brief stops position control and disables motors and servo
+         * 
+         * @retval ok
+         */
+        el::retcode terminate();
+
         /**
          * @brief set initial motor position and calibrate range
-         * 
+         * of the y motor
          */
-        void calibrate();
+        void calibrateY();
+
+        void waitForCalibrate();
 
         /**
          * @brief set the arm height in percent (0...down, 100...up)
