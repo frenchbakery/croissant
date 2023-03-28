@@ -16,6 +16,7 @@
 #include <kipr/digital/digital.hpp>
 #include <kipr/analog/analog.hpp>
 #include <kipr/wombat.h>
+#include <kipr/botball/botball.h>
 
 #include "global_objects.hpp"
 #include "utils.hpp"
@@ -50,6 +51,7 @@ void defaultRun()
     waitForLightOrInput(wait_for_light_sensor);
     
     //system("/home/access/projects/stopper/run/stopper &");
+    shut_down_in(118);
 
 
     /*

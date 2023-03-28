@@ -101,8 +101,14 @@ void sq::alignFront()
     go::nav->driveLeftSpeed(CALIB_SPEED);
     go::nav->driveRightSpeed(CALIB_SPEED);
 
+    int start = seconds();
+    const int timeouts = 5;
+
     for (;;)
     {
+        // a timeout in case the front switches miss
+        if (seconds() - start > timeouts) break;
+
         if (front_button_left.value())
             go::nav->driveLeftSpeed(0);
         else 
@@ -244,7 +250,7 @@ void sq::homeToPomStart()
 void sq::homeToKnock()
 {
     go::arm->calibrateY();
-    go::nav->driveDistance(6);
+    go::nav->driveDistance(7.7);
     go::nav->rotateBy(D2R(92));
     
     go::nav->startSequence();
@@ -318,7 +324,7 @@ void sq::pickUpNoodleFromRack()
     msleep(200);
     go::arm->grab(80);
     // wait at least 10 seconds for other robot to pass by
-    msleep(6000);
+    msleep(2000);
     go::arm->waitForGrab();
 
     go::nav->driveDistance(-40);
