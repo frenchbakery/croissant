@@ -1,7 +1,7 @@
 /**
  * @file pom_container.hpp
  * @author melektron
- * @brief driver class for the pom sorter of the croissant robot
+ * @brief driver class for the arm extending the independent structure for knockin over rocka-stand
  * @version 0.1
  * @date 2023-02-08
  *
@@ -13,19 +13,19 @@
 #include <cmath>
 #include <kipr/time/time.h>
 
-#include "pom_container.hpp"
+#include "knocker.hpp"
 
 // servo position defs
 #define POSITION_OPEN 228//400
 #define POSITION_CLOSED 983//1119
 #define POSITION_HOLD 822//933
 
-PomContainer::PomContainer(int sp)
+Knocker::Knocker(int sp)
     : selector_servo(sp)
 {
 }
 
-void PomContainer::moveServoToIn(int target_pos, int time)
+void Knocker::moveServoToIn(int target_pos, int time)
 {
     int pos = selector_servo.position();
     if (pos == target_pos) return;
@@ -41,7 +41,7 @@ void PomContainer::moveServoToIn(int target_pos, int time)
     selector_servo.setPosition(target_pos);
 }
 
-void PomContainer::initialize()
+void Knocker::initialize()
 {
     selector_servo.enable();
     moveServoToIn(POSITION_HOLD, 500);
@@ -49,21 +49,21 @@ void PomContainer::initialize()
     // selector_servo.disable();
 }
 
-void PomContainer::terminate()
+void Knocker::terminate()
 {
     // selector_servo.enable();
     moveServoToIn(POSITION_HOLD, 500);
     selector_servo.disable();
 }
 
-void PomContainer::open()
+void Knocker::open()
 {
     // selector_servo.enable();
     moveServoToIn(POSITION_OPEN, 400);
     // selector_servo.disable();
 }
 
-void PomContainer::close()
+void Knocker::close()
 {
 
     // selector_servo.enable();
@@ -71,7 +71,7 @@ void PomContainer::close()
     // selector_servo.disable();
 }
 
-void PomContainer::hold()
+void Knocker::hold()
 {
 
     // selector_servo.enable();

@@ -13,7 +13,7 @@
 
 #include <kipr/servo/servo.hpp>
 
-class PomContainer
+class Knocker
 {
 protected:
     // Hardware access
@@ -30,7 +30,7 @@ protected:
 
 public:
 
-    PomContainer(int sp);
+    Knocker(int sp);
 
     void initialize();
     void terminate();

@@ -29,7 +29,7 @@ namespace go
 {
     CRNav *nav = nullptr;
     Arm *arm = nullptr;
-    PomContainer *pom = nullptr;
+    Knocker *kno = nullptr;
 }
 
 // wait for light sensor
@@ -76,14 +76,14 @@ int main()
     // creating clobal objects
     go::nav = new CRNav;
     go::arm = new Arm(ARM_MOTOR_PORT, ARM_LEFT_SERVO, ARM_RIGHT_SERVO, ARM_END_SWITCH);
-    go::pom = new PomContainer(POM_SORTER_SERVO);
+    go::kno = new Knocker(POM_SORTER_SERVO);
 
     //Press button on Wombat before programm starts
     //wait_for_side_button();
 
     // initializing required components
-    go::pom->initialize();
-    go::pom->close();
+    go::kno->initialize();
+    go::kno->close();
     go::arm->initialize();
     go::arm->setServoSpeed(ARM_SERVO_SPEED);
     go::nav->initialize();
@@ -220,7 +220,7 @@ int main()
         }
     }
 
-    go::pom->terminate();
+    go::kno->terminate();
     go::arm->terminate();
     go::nav->terminate();
 

@@ -13,12 +13,12 @@
 
 #include "drivers/navigation/croissant/crnav.hpp"
 #include "drivers/croissant/arm/arm.hpp"
-#include "drivers/croissant/pom_sorter/pom_container.hpp"
+#include "drivers/croissant/knocker/knocker.hpp"
 
 // global object pointer declaration
 namespace go
 {
     extern CRNav *nav;
     extern Arm *arm;
-    extern PomContainer *pom;
+    extern Knocker *kno;
 } // namespace go

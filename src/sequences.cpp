@@ -227,11 +227,11 @@ void sq::sortOnePom(double offset1, double offset2)
     go::nav->driveDistance(first_distance + offset1);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::pom->open();
+    go::kno->open();
     go::nav->driveDistance(41 - first_distance + offset2);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::pom->close();
+    go::kno->close();
 }
 
 void sq::driveBaseOffset()
@@ -287,11 +287,11 @@ void sq::sortPoms()
 {
     //collect fist poms
     sq::alignBack();
-    go::pom->open();
+    go::kno->open();
     go::nav->driveDistance(35);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-    go::pom->close();
+    go::kno->close();
     
     //get into aligned position parallel to black tape
     go::nav->driveDistance(-6);
