@@ -206,7 +206,7 @@ void sq::centerOnLine()
     go::nav->resetPositionControllers();
     go::nav->enablePositionControl();
 
-    go::nav->rotateBy(D2R(-10));
+    go::nav->rotateBy(D2R(-12));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 }
@@ -258,8 +258,8 @@ void sq::homeToPomStart()
 void sq::homeToKnock()
 {
     go::arm->calibrateY();
-    go::nav->driveDistance(8);
-    go::nav->rotateBy(D2R(90));
+    go::nav->driveDistance(6);
+    go::nav->rotateBy(D2R(92));
     
     go::nav->startSequence();
 
@@ -339,27 +339,31 @@ void sq::approachRack()
 
 void sq::pickUpNoodleFromRack()
 {
+    // in case a grab is still active wait
+    go::arm->waitForGrab();
     go::arm->tilt(0);
     //go::nav->set
     go::arm->setYPerc(80);
     go::arm->waitForY();
     go::arm->waitForTilt();
+    go::arm->grab(-30);
+    msleep(300);
     go::nav->driveDistance(9);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 
-    go::arm->setYPerc(70);
+    go::arm->setYPerc(80);
     //go::arm->waitForY();
     msleep(200);
 
-    go::arm->grab(70);
+    go::arm->grab(80);
     //go::arm->waitForGrab();
-    msleep(400);
+    msleep(800);
     go::nav->driveDistance(-8);
     go::nav->startSequence();
     //go::nav->awaitSequenceComplete();
     msleep(800);
-    go::arm->grab(10);
+    go::arm->grab(0);
     //go::arm->waitForGrab();
     msleep(400);
     go::arm->setYPerc(90);
@@ -369,10 +373,10 @@ void sq::pickUpNoodleFromRack()
     go::nav->startSequence();
     //go::nav->awaitSequenceComplete();
     msleep(1000);
-    go::arm->setYPerc(70);
+    go::arm->setYPerc(80);
     //go::arm->waitForY();
     msleep(200);
-    go::arm->grab(70);
+    go::arm->grab(80);
     // wait at least 10 seconds for other robot to pass by
     msleep(6000);
     go::arm->waitForGrab();
@@ -440,6 +444,7 @@ void sq::dropBehind()
 void sq::doNoodleTask()
 {
     // get red noodle and place on rack
+    go::arm->grab(0);
     sq::approachRack();
     sq::pickUpNoodleFromRack();
     
@@ -526,12 +531,12 @@ void sq::doNoodleTask()
 
 void sq::knockOverStand()
 {
-    go::arm->setYPerc(60);
+    go::arm->setYPerc(50);
     go::nav->driveDistance(60);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 
-    go::arm->setYPerc(15);
+    go::arm->setYPerc(10);
     go::arm->waitForY();
     go::nav->driveDistance(-70);
     go::nav->startSequence();
