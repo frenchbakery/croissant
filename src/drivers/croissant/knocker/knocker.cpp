@@ -15,66 +15,58 @@
 
 #include "knocker.hpp"
 
-// servo position defs
-#define POSITION_OPEN 228//400
-#define POSITION_CLOSED 983//1119
-#define POSITION_HOLD 822//933
+// arm servo position defs
+#define POSITION_HOLD 0
+#define POSITION_PLACE 700
+#define POSITION_RETRACT 2047
+// lift servo position defs
+#define POSITION_UP 1951
+#define POSITION_DOWN 1511
 
-Knocker::Knocker(int sp)
-    : selector_servo(sp)
-{
-}
+#define SERVO_SPEED 2000
 
-void Knocker::moveServoToIn(int target_pos, int time)
+
+Knocker::Knocker(int arm_port, int lift_port)
+    : arm_servo(arm_port),
+      lift_servo(lift_port)
 {
-    int pos = selector_servo.position();
-    if (pos == target_pos) return;
-    const int steps_size = 10;
-    const int delay_per_step = (time * steps_size) / std::abs(target_pos - pos);
-    const int direction = pos > target_pos ? -1 : 1; // decrement if target is smaller
-    while (std::abs(target_pos - pos) >= steps_size)
-    {
-        selector_servo.setPosition(pos += direction * steps_size);
-        msleep(delay_per_step);
-    }
-    // the final step can be smaller than the step size
-    selector_servo.setPosition(target_pos);
 }
 
 void Knocker::initialize()
 {
-    selector_servo.enable();
-    moveServoToIn(POSITION_HOLD, 500);
-    // msleep(200);
-    // selector_servo.disable();
+    arm_servo.enable();
+    lift_servo.enable();
+    arm_servo.setSpeed(SERVO_SPEED);
+    lift_servo.setSpeed(SERVO_SPEED);
 }
 
 void Knocker::terminate()
 {
-    // selector_servo.enable();
-    moveServoToIn(POSITION_HOLD, 500);
-    selector_servo.disable();
+    arm_servo.setPosition(POSITION_RETRACT);
+    arm_servo.disable();
 }
 
-void Knocker::open()
+void Knocker::place()
 {
-    // selector_servo.enable();
-    moveServoToIn(POSITION_OPEN, 400);
-    // selector_servo.disable();
+    arm_servo.setPosition(POSITION_PLACE);
 }
 
-void Knocker::close()
+void Knocker::retract()
 {
-
-    // selector_servo.enable();
-    moveServoToIn(POSITION_CLOSED, 400);
-    // selector_servo.disable();
+    arm_servo.setPosition(POSITION_RETRACT);
 }
 
 void Knocker::hold()
 {
+    arm_servo.setPosition(POSITION_HOLD);
+}
 
-    // selector_servo.enable();
-    moveServoToIn(POSITION_HOLD, 400);
-    // selector_servo.disable();
+void Knocker::up()
+{
+    lift_servo.setPosition(POSITION_UP);
+}
+
+void Knocker::down()
+{
+    lift_servo.setPosition(POSITION_DOWN);
 }

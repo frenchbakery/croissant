@@ -220,20 +220,6 @@ void sq::alignFromDropPosition(double distance)
     sq::alignBack();
 }
 
-
-void sq::sortOnePom(double offset1, double offset2)
-{
-    double first_distance = 15;
-    go::nav->driveDistance(first_distance + offset1);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::kno->open();
-    go::nav->driveDistance(41 - first_distance + offset2);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::kno->close();
-}
-
 void sq::driveBaseOffset()
 {
     go::nav->driveDistance(5);
@@ -281,52 +267,6 @@ void sq::knockEndToNoodleStart()
     go::nav->rotateBy(D2R(-90));
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
-}
-
-void sq::sortPoms()
-{
-    //collect fist poms
-    sq::alignBack();
-    go::kno->open();
-    go::nav->driveDistance(35);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::kno->close();
-    
-    //get into aligned position parallel to black tape
-    go::nav->driveDistance(-6);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    go::nav->rotateBy(D2R(-270));
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-
-    // align to line
-    sq::alignRight();
-    go::nav->rotateBy(D2R(19));
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-
-    //Takes red poms from the line until end is reached
-    for (int i = 0; i < 4; i++)
-    {
-        if (i == 0)
-            sq::sortOnePom(-15);
-        else if (i == 3)
-            sq::sortOnePom(0, -10);
-        else
-            sq::sortOnePom();
-    }
-    
-    //Turns 180 to drive in other direction
-    go::nav->driveDistance(-25);
-    go::nav->rotateBy(D2R(90));
-    go::nav->driveDistance(10);
-    go::nav->rotateBy(D2R(90));
-    go::nav->driveDistance(-20);
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
-    sq::alignBack();
 }
 
 void sq::approachRack()
@@ -532,7 +472,16 @@ void sq::doNoodleTask()
 void sq::knockOverStand()
 {
     go::arm->setYPerc(50);
-    go::nav->driveDistance(60);
+    go::nav->driveDistance(30);
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+    go::kno->place();
+    msleep(500);
+    go::kno->up();
+    msleep(300);
+    go::kno->hold();
+
+    go::nav->driveDistance(30);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 
@@ -541,5 +490,7 @@ void sq::knockOverStand()
     go::nav->driveDistance(-70);
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
+    go::kno->down();
+    go::kno->retract();
 
 }

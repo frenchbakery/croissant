@@ -48,6 +48,8 @@ void defaultRun()
     // wait for light (right now just wait for input)
     //calibrateLightSensor(wait_for_light_sensor);
     waitForLightOrInput(wait_for_light_sensor);
+    
+    //system("/home/access/projects/stopper/run/stopper &");
 
 
     /*
@@ -76,14 +78,15 @@ int main()
     // creating clobal objects
     go::nav = new CRNav;
     go::arm = new Arm(ARM_MOTOR_PORT, ARM_LEFT_SERVO, ARM_RIGHT_SERVO, ARM_END_SWITCH);
-    go::kno = new Knocker(POM_SORTER_SERVO);
+    go::kno = new Knocker(KNOCKER_ARM_SERVO, KNOCKER_LIFT_SERVO);
 
     //Press button on Wombat before programm starts
     //wait_for_side_button();
 
     // initializing required components
     go::kno->initialize();
-    go::kno->close();
+    go::kno->hold();
+    go::kno->down();
     go::arm->initialize();
     go::arm->setServoSpeed(ARM_SERVO_SPEED);
     go::nav->initialize();
@@ -193,20 +196,25 @@ int main()
             }
             break;
         }
-        case 'p':
+        case 'k':
         {
             std::cin >> cmd;
             switch (cmd)
             {
-            case 'b':
-                sq::driveBaseOffset();
+            case 'u':   // up
+                go::kno->up();
                 break;
-            case 's':   // up
-                sq::sortPoms();
+            case 'd':
+                go::kno->down();
                 break;
-            case 'a':
-                sq::driveBaseOffset();
-                sq::sortPoms();
+            case 'h':
+                go::kno->hold();
+                break;
+            case 'p':
+                go::kno->place();
+                break;
+            case 'r':
+                go::kno->retract();
                 break;
             
             default:
@@ -223,6 +231,9 @@ int main()
     go::kno->terminate();
     go::arm->terminate();
     go::nav->terminate();
+
+    alloff();
+    //system("PID=$(pidof run/stopper) && echo \"Stopper: killing ${PID} now\" && kill -INT \"${PID}\"");
 
     return 0;
 }

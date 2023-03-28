@@ -11,31 +11,25 @@
 
 #pragma once
 
-#include <kipr/servo/servo.hpp>
+#include <kiprplus/smooth_servo.hpp>
 
 class Knocker
 {
 protected:
     // Hardware access
-    kipr::servo::Servo selector_servo;
-
-    /**
-     * @brief moves the servo to the specified position in the
-     * specified time duration
-     * 
-     * @param target_pos target position
-     * @param time time in ms it should take
-     */
-    void moveServoToIn(int target_pos, int time);
+    kp::SmoothServo arm_servo;
+    kp::SmoothServo lift_servo;
 
 public:
 
-    Knocker(int sp);
+    Knocker(int arm_port, int lift_port);
 
     void initialize();
     void terminate();
 
-    void open();
-    void close();
+    void place();
+    void retract();
     void hold();
+    void up();
+    void down();
 };

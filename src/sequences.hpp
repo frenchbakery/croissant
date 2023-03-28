@@ -37,10 +37,6 @@ namespace sq
     void pomEndToNoodleStart();
     void knockEndToNoodleStart();
 
-    // == Pom sorting
-    void sortOnePom(double offset1 = 0, double offset2 = 0);
-    void sortPoms();
-
     // == Noodles
     void approachRack();
     void pickUpNoodleFromRack();
@@ -49,7 +45,6 @@ namespace sq
     void dropNoodle();
     void dropBehind();  // turns 180, drives distance, drops
     void doNoodleTask();
-    
 
     // == Rocka-Stand
     void knockOverStand();

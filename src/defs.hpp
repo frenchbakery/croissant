@@ -12,7 +12,8 @@
 #pragma once
 
 // pinout
-#define POM_SORTER_SERVO 0
+#define KNOCKER_ARM_SERVO 0
+#define KNOCKER_LIFT_SERVO 3
 #define ARM_MOTOR_PORT 2
 #define ARM_LEFT_SERVO 1
 #define ARM_RIGHT_SERVO 2
