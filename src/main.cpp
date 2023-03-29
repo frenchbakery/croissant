@@ -51,7 +51,7 @@ void defaultRun()
     waitForLightOrInput(wait_for_light_sensor);
     
     //system("/home/access/projects/stopper/run/stopper &");
-    shut_down_in(118);
+    shut_down_in(117);
 
 
     /*
