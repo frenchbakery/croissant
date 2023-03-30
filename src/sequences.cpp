@@ -269,6 +269,10 @@ void sq::centerOnLine()
     go::nav->resetPositionControllers();
     go::nav->enablePositionControl();
 
+    go::nav->rotateBy(D2R(-12));
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
+
 }
 
 
