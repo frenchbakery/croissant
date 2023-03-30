@@ -258,7 +258,7 @@ void sq::centerOnLine()
 
     while (line_center.value() > LIGHT_THRESHOLD)
     {
-        go::nav->driveLeftSpeed(-300);
+        go::nav->driveLeftSpeed(-CALIB_SPEED);
         if (seconds() - start_time > timeout)
             break;
     }
