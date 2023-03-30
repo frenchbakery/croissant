@@ -15,7 +15,7 @@ namespace sq
 {
     // == Alignment
     void alignBack();
-    void alignLine();
+    void centerOnLineOuter();
     void alignFront();
     void alignOnLineFromRight();
     /**

@@ -117,7 +117,7 @@ int main()
             else if (cmd == 'f')
                 sq::alignFront();
             else if (cmd == 'l')
-                sq::alignLine();
+                sq::centerOnLineOuter();
             else if (cmd == 'r')
                 sq::alignOnLineFromRight();
             else if (cmd == 'c')

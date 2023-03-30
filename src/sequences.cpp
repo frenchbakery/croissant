@@ -63,26 +63,40 @@ void sq::alignBack()
     go::nav->enablePositionControl();
 }
 
-void sq::alignLine()
+void sq::centerOnLineOuter()
 {
     go::nav->disablePositionControl();
 
-    go::nav->driveLeftSpeed(CALIB_SPEED);
+    go::nav->driveLeftSpeed(-CALIB_SPEED);
     go::nav->driveRightSpeed(CALIB_SPEED);
+
+    enum state_t
+    {
+        START,
+        LEFT_DONE
+    } state = START;
+
+    int time_start = seconds();
+    const int timeout = 3;  // s
 
     for (;;)
     {
-        if (line_left.value() > LIGHT_THRESHOLD)
-            go::nav->driveLeftSpeed(0);
-        else 
-            go::nav->driveLeftSpeed(CALIB_SPEED);
+        // flag is true when on black (= when value is big)
+        bool right = line_right.value() > LIGHT_THRESHOLD;
+        bool left = line_left.value() > LIGHT_THRESHOLD;
         
-        if (line_right.value() > LIGHT_THRESHOLD)
-            go::nav->driveRightSpeed(0);
-        else 
-            go::nav->driveRightSpeed(CALIB_SPEED);
+        if (right && state == START)
+        {
+            // rotate to right
+            go::nav->driveLeftSpeed(CALIB_SPEED);
+            go::nav->driveRightSpeed(-CALIB_SPEED);
+            state = LEFT_DONE;
+        }
+        else if (left && state == LEFT_DONE)
+            break;
 
-        if (line_left.value() > LIGHT_THRESHOLD && line_right.value() > LIGHT_THRESHOLD)
+        // don't waste to much time on that
+        if (seconds() - time_start >= timeout)
             break;
         
         msleep(10);
@@ -92,6 +106,10 @@ void sq::alignLine()
     go::nav->driveRightSpeed(0);
     go::nav->resetPositionControllers();
     go::nav->enablePositionControl();
+
+    go::nav->rotateBy(D2R(10));
+    go::nav->startSequence();
+    go::nav->awaitSequenceComplete();
 }
 
 void sq::alignFront()
@@ -138,9 +156,6 @@ void sq::alignOnLineFromRight()
 
     go::nav->driveLeftSpeed(DRIVE_SPEED);
     go::nav->driveRightSpeed(-DRIVE_SPEED);
-
-    while (line_right.value() < LIGHT_THRESHOLD)
-        msleep(1);
 
     enum dir_t
     {
@@ -238,9 +253,14 @@ void sq::centerOnLine()
     }
     go::nav->driveLeftSpeed(0);*/
 
+    int start_time = seconds();
+    int timeout = 3; // s
+
     while (line_center.value() > LIGHT_THRESHOLD)
     {
         go::nav->driveLeftSpeed(-300);
+        if (seconds() - start_time > timeout)
+            break;
     }
     go::nav->driveLeftSpeed(0);
 
@@ -249,9 +269,6 @@ void sq::centerOnLine()
     go::nav->resetPositionControllers();
     go::nav->enablePositionControl();
 
-    go::nav->rotateBy(D2R(-12));
-    go::nav->startSequence();
-    go::nav->awaitSequenceComplete();
 }
 
 
@@ -444,7 +461,7 @@ void sq::doNoodleTask()
 
     sq::trackLineUntil(2800);
 
-    sq::centerOnLine();
+    sq::centerOnLineOuter();
 
     sq::placeNoodleOnStand();
 
