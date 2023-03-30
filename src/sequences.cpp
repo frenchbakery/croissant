@@ -275,6 +275,50 @@ void sq::centerOnLine()
 
 }
 
+void sq::getOfLineToLeft()
+{
+    const int DRIVE_SPEED = 500;
+    go::nav->disablePositionControl();
+
+    enum dir_t
+    {
+        RIGHT,
+        LEFT
+    } dir;
+
+    for (;;)
+    {
+        // flag is true when on black (= when value is big)
+        bool right = line_right.value() > LIGHT_THRESHOLD;
+        bool left = line_left.value() > LIGHT_THRESHOLD;
+        bool center = line_center.value() > LIGHT_THRESHOLD; 
+        
+        // stop when the center is off the line and only the right touching
+        if (!center && right)
+            break;
+        else
+            dir = LEFT;
+        
+
+        if (dir == RIGHT)
+        {
+            go::nav->driveLeftSpeed(DRIVE_SPEED);
+            go::nav->driveRightSpeed(-DRIVE_SPEED);
+        }
+        else
+        {
+            go::nav->driveLeftSpeed(-DRIVE_SPEED);
+            go::nav->driveRightSpeed(DRIVE_SPEED);
+        }
+    }
+
+    go::nav->driveLeftSpeed(0);
+    go::nav->driveRightSpeed(0);
+
+    go::nav->resetPositionControllers();
+    go::nav->enablePositionControl();
+}
+
 
 void sq::alignFromDropPosition(double distance)
 {
@@ -309,7 +353,7 @@ void sq::homeToKnock()
 {
     go::arm->calibrateY();
     go::nav->driveDistance(7.7);
-    go::nav->rotateBy(D2R(92));
+    go::nav->rotateBy(D2R(90));
     
     go::nav->startSequence();
 
@@ -473,8 +517,11 @@ void sq::doNoodleTask()
     go::nav->startSequence();
     go::nav->awaitSequenceComplete();
 
+    // get off the line using sensors to concer the bump
+    sq::getOfLineToLeft();
+
     // drive to second to right most noodle
-    go::nav->rotateBy(D2R(90));
+    go::nav->rotateBy(D2R(75));
     go::nav->driveDistance(21);
     go::nav->rotateBy(D2R(-90));
     go::nav->driveDistance(10);

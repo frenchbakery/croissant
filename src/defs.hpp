@@ -21,6 +21,6 @@
 
 // non-critical sensor calibration and config values
 #define CALIB_SPEED 650 // TPS700
-#define NAV_SPEED 1000
+#define NAV_SPEED 1200
 #define ARM_SERVO_SPEED 1024
 #define LIGHT_THRESHOLD 1200

@@ -26,6 +26,7 @@ namespace sq
      */
     void trackLineUntil(int pos_threshold);
     void centerOnLine();
+    void getOfLineToLeft();
 
     // == Special alignment procedures
     void alignFromDropPosition(double distance);

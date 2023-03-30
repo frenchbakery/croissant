@@ -124,6 +124,8 @@ int main()
                 sq::centerOnLine();
             else if (cmd == 'a')
                 sq::approachRack();
+            else if (cmd == 'o')
+                sq::getOfLineToLeft();
             else if (cmd == 't')
             {
                 std::cin >> p1;
