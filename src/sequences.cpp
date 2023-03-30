@@ -131,15 +131,52 @@ void sq::alignFront()
     go::nav->enablePositionControl();
 }
 
-void sq::alignRight()
+void sq::alignOnLineFromRight()
 {
+    const int DRIVE_SPEED = 500;
     go::nav->disablePositionControl();
 
-    go::nav->driveLeftSpeed(300);
-    go::nav->driveRightSpeed(-300);
+    go::nav->driveLeftSpeed(DRIVE_SPEED);
+    go::nav->driveRightSpeed(-DRIVE_SPEED);
 
     while (line_right.value() < LIGHT_THRESHOLD)
         msleep(1);
+
+    enum dir_t
+    {
+        RIGHT,
+        LEFT
+    } dir;
+
+    for (;;)
+    {
+        // flag is true when on black (= when value is big)
+        bool right = line_right.value() > LIGHT_THRESHOLD;
+        bool left = line_left.value() > LIGHT_THRESHOLD;
+        bool center = line_center.value() > LIGHT_THRESHOLD; 
+        
+        // if nothing is on
+        if (!right && !left && !center)
+            dir = RIGHT;
+        else if (right && !left && !center)
+            dir = RIGHT;
+        else if (left && center)
+            break;
+        else
+            dir = RIGHT;
+        
+
+        if (dir == RIGHT)
+        {
+            go::nav->driveLeftSpeed(DRIVE_SPEED);
+            go::nav->driveRightSpeed(-DRIVE_SPEED);
+        }
+        else
+        {
+            go::nav->driveLeftSpeed(DRIVE_SPEED);
+            go::nav->driveRightSpeed(-DRIVE_SPEED);
+        }
+    }
 
     go::nav->driveLeftSpeed(0);
     go::nav->driveRightSpeed(0);
@@ -395,10 +432,15 @@ void sq::doNoodleTask()
     sq::pickUpNoodleFromRack();
     
     go::arm->tilt(90);
-    go::nav->rotateBy(D2R(-180));
+    go::nav->rotateBy(D2R(-135));   // drive less than 180 degrees in order to then realign
     go::nav->startSequence();
-    go::arm->waitForTilt();
     go::nav->awaitSequenceComplete();
+
+    // now fix the angle to be on the line again in case the robot wasn straight before
+    sq::alignOnLineFromRight();
+
+    // wait until the tilt is done
+    go::arm->waitForTilt();
 
     sq::trackLineUntil(2800);
 

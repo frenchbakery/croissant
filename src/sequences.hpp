@@ -17,7 +17,7 @@ namespace sq
     void alignBack();
     void alignLine();
     void alignFront();
-    void alignRight();
+    void alignOnLineFromRight();
     /**
      * @brief tracks the black line and follows it using the configured navigation 
      * speed until the front distance sensor has reached a threshold
